@@ -177,7 +177,7 @@ body[data-subject="spc"] .pick button,body[data-subject="spc"] .tube,body[data-s
 .seasons{position:relative;width:100%;max-width:340px;aspect-ratio:1;margin:6px auto}
 .seasons .sun2{position:absolute;top:50%;left:50%;width:54px;height:54px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,#fff59d,#f59e0b 60%,#ea580c);box-shadow:0 0 34px #f59e0b,0 0 70px rgba(245,158,11,.45)}
 .seasons .ring{position:absolute;inset:9%;border:1px dashed rgba(170,170,210,.4);border-radius:50%}
-.season-orbit{position:absolute;inset:9%;animation:orbitspin 18s linear infinite}
+.season-orbit{position:absolute;inset:9%;animation:orbitspin 18s linear infinite;pointer-events:none}
 @keyframes orbitspin{to{transform:rotate(360deg)}}
 .earth-wrap{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);animation:earthcw 18s linear infinite}
 @keyframes earthcw{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(-360deg)}}
@@ -185,9 +185,18 @@ body[data-subject="spc"] .pick button,body[data-subject="spc"] .tube,body[data-s
 .earth .axis{position:absolute;left:50%;top:-9px;bottom:-9px;width:2px;background:#fff;transform:translateX(-50%) rotate(23.5deg);border-radius:2px;opacity:.9}
 .earth .axis::before,.earth .axis::after{content:'';position:absolute;left:50%;width:5px;height:5px;border-radius:50%;background:#fff;transform:translateX(-50%)}
 .earth .axis::before{top:-3px}.earth .axis::after{bottom:-3px}
-.spt{position:absolute;font-size:17px;transform:translate(-50%,-50%);filter:drop-shadow(0 1px 2px #000)}
+.spt{position:absolute;font-size:17px;transform:translate(-50%,-50%);filter:drop-shadow(0 1px 2px #000);cursor:pointer;pointer-events:auto;padding:5px;z-index:6}
 .spt.n{top:9%;left:50%}.spt.s{top:91%;left:50%}.spt.e{top:50%;left:91%}.spt.w{top:50%;left:9%}
 .seasons.paused .season-orbit,.seasons.paused .earth-wrap{animation-play-state:paused}
+/* tooltip penjelasan musim (klik penanda ☀️🍂❄️🌸) */
+#season-tip{position:absolute;z-index:50;width:170px;background:var(--card);border:1px solid var(--line);
+  border-radius:11px;padding:9px 11px;font-size:11.5px;font-weight:700;color:var(--ink);line-height:1.45;
+  text-align:left;box-shadow:var(--shadow);display:none;pointer-events:none;transform:translate(-50%,-100%)}
+#season-tip.below{transform:translate(-50%,0)}
+#season-tip.on{display:block;animation:fade .2s}
+#season-tip b{display:block;color:var(--accent-d);font-size:12.5px;margin-bottom:2px}
+#season-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--card)}
+#season-tip.below::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:var(--card)}
 
 /* animasi pasang surut: Bulan mengorbit Bumi, gembungan air (bulge) membesar
    saat Bulan SEGARIS dgn Matahari (purnama) & mengecil saat TEGAK LURUS (perbani) */
@@ -1238,15 +1247,16 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
     <div class="note">🌗 Pergantian musim terjadi karena sumbu bumi <b>miring 23,5°</b>. Belahan bumi yang <b>menghadap matahari</b> mengalami musim semi/panas. Tanpa kemiringan ini, tak ada musim!</div>
     <div class="lab">
       <h3>🌍 Animasi: Bumi Berevolusi &amp; Musim</h3>
-      <p class="hint">Perhatikan garis sumbu Bumi (putih) — kemiringannya <b>tetap 23,5°</b> ke arah yang sama. Saat mengorbit, belahan yang condong ke Matahari berganti → itulah pergantian musim.</p>
+      <p class="hint">Perhatikan garis sumbu Bumi (putih) — kemiringannya <b>tetap 23,5°</b> ke arah yang sama. Saat mengorbit, belahan yang condong ke Matahari berganti → itulah pergantian musim. <b>Klik penanda musim (☀️🍂❄️🌸)</b> untuk penjelasannya.</p>
       <div class="seasons" id="seasons-anim">
         <div class="ring"></div>
         <div class="sun2" title="Matahari"></div>
-        <div class="spt n" title="21 Juni — Musim Panas (Utara)">☀️</div>
-        <div class="spt e" title="23 September — Musim Gugur">🍂</div>
-        <div class="spt s" title="22 Desember — Musim Dingin (Utara)">❄️</div>
-        <div class="spt w" title="21 Maret — Musim Semi">🌸</div>
+        <div class="spt n" onclick="seasonTip('n',this,event)" title="Klik untuk penjelasan">☀️</div>
+        <div class="spt e" onclick="seasonTip('e',this,event)" title="Klik untuk penjelasan">🍂</div>
+        <div class="spt s" onclick="seasonTip('s',this,event)" title="Klik untuk penjelasan">❄️</div>
+        <div class="spt w" onclick="seasonTip('w',this,event)" title="Klik untuk penjelasan">🌸</div>
         <div class="season-orbit"><div class="earth-wrap"><div class="earth"><div class="axis"></div></div></div></div>
+        <div id="season-tip"></div>
       </div>
       <div style="text-align:center;margin-top:4px"><button class="btn ghost" onclick="var s=document.getElementById('seasons-anim');s.classList.toggle('paused');this.textContent=s.classList.contains('paused')?'▶️ Putar':'⏸️ Jeda'">⏸️ Jeda</button></div>
       <p class="hint" style="text-align:center;margin-top:8px">☀️ 21 Jun · Panas &nbsp;·&nbsp; 🍂 23 Sep · Gugur &nbsp;·&nbsp; ❄️ 22 Des · Dingin &nbsp;·&nbsp; 🌸 21 Mar · Semi <span style="opacity:.7">(belahan Utara)</span></p>
@@ -1752,6 +1762,31 @@ function initInd(){const w=document.getElementById('ind-pick');if(!w)return;
     w.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===bn));indShow(bn.dataset.k);});
   indShow('kubis');}
 initInd();
+
+/* ---- tooltip penjelasan musim (Tata Surya) ---- */
+const SEASONS={
+  n:['☀️ 21 Juni — Musim Panas','Belahan bumi UTARA condong ke Matahari → siang lebih panjang dari malam. (Di belahan Selatan justru musim dingin.)',false],
+  e:['🍂 23 September — Musim Gugur','Matahari tepat di garis khatulistiwa → siang &amp; malam SAMA panjang (ekuinoks).',false],
+  s:['❄️ 22 Desember — Musim Dingin','Belahan bumi UTARA menjauh dari Matahari → malam lebih panjang dari siang. (Di belahan Selatan justru musim panas.)',true],
+  w:['🌸 21 Maret — Musim Semi','Matahari tepat di garis khatulistiwa → siang &amp; malam SAMA panjang (ekuinoks).',false]
+};
+function seasonTip(key,el,ev){
+  if(ev)ev.stopPropagation();
+  const box=document.getElementById('seasons-anim'),tip=document.getElementById('season-tip');if(!box||!tip)return;
+  if(el.dataset.open==='1'){seasonResume();return;}
+  box.querySelectorAll('.spt').forEach(x=>x.dataset.open='0'); el.dataset.open='1';
+  const d=SEASONS[key],br=box.getBoundingClientRect(),mr=el.getBoundingClientRect();
+  tip.innerHTML='<b>'+d[0]+'</b>'+d[1];
+  tip.style.left=(mr.left-br.left+mr.width/2)+'px';
+  if(d[2]){tip.style.top=(mr.top-br.top+mr.height+4)+'px';tip.classList.add('below');}
+  else{tip.style.top=(mr.top-br.top-4)+'px';tip.classList.remove('below');}
+  tip.classList.add('on');
+}
+function seasonResume(){
+  const box=document.getElementById('seasons-anim');if(box)box.querySelectorAll('.spt').forEach(x=>x.dataset.open='0');
+  const t=document.getElementById('season-tip');if(t)t.classList.remove('on');
+}
+(function(){const b=document.getElementById('seasons-anim');if(b)b.onclick=seasonResume;})();
 </script>
 </body>
 </html>
