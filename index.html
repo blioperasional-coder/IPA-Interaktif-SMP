@@ -1302,6 +1302,13 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       </div>
       <p id="ec-order" style="text-align:center;font-weight:800;font-size:17px;color:#c7d2fe;margin:12px 0 4px"></p>
       <p id="ec-desc" class="hint" style="text-align:center"></p>
+      <hr style="border:0;border-top:1px solid var(--line);margin:14px 0">
+      <p class="hint" style="text-align:center;margin:0 0 6px"><b>🎮 Simulasi:</b> geser untuk menggerakkan Bulan &amp; lihat gerhananya terjadi</p>
+      <div style="text-align:center"><canvas id="ec-sim" width="360" height="150" style="max-width:100%;background:#0b0d28;border-radius:12px"></canvas></div>
+      <input type="range" id="ec-slider" min="0" max="100" value="18">
+      <p id="ec-sim-status" style="text-align:center;font-weight:800;min-height:22px;color:#c7d2fe"></p>
+      <div class="pick" id="ec-near" style="justify-content:center"><button class="on" data-m="dekat">🌑 Bulan dekat → Total</button><button data-m="jauh">💍 Bulan jauh → Cincin</button></div>
+      <p class="hint" style="text-align:center;margin-top:4px;opacity:.75">(pilihan dekat/jauh berlaku untuk gerhana Matahari)</p>
     </div>
     <div class="note">💡 <b>Umbra</b> = bayangan inti (gelap total). <b>Penumbra</b> = bayangan kabur (gelap sebagian). Letak suatu tempat di umbra/penumbra menentukan jenis gerhananya.</div>
 
@@ -1684,9 +1691,45 @@ function eclipse(k){
     document.getElementById('ec-desc').innerHTML='Bumi di tengah. Bulan masuk <b>umbra</b> Bumi → gerhana <b>total</b> (bisa memerah); sebagian di umbra → <b>sebagian</b>; hanya <b>penumbra</b> → gerhana penumbra (redup).';
   }
   svg.innerHTML=body;
+  ecMode=k; drawEcSim();
+}
+/* ---- simulasi gerhana interaktif (geser Bulan) ---- */
+let ecMode='matahari', ecNear=true;
+function drawEcSim(){
+  const cv=document.getElementById('ec-sim');if(!cv)return;const ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height,cy=H/2,t=(+document.getElementById('ec-slider').value)/100;
+  const st=document.getElementById('ec-sim-status');ctx.clearRect(0,0,W,H);
+  if(ecMode==='matahari'){
+    const cx=W*0.5,sunR=42,moonR=ecNear?46:34,mx=-moonR+t*(W+2*moonR);
+    ctx.fillStyle='#f9c22e';ctx.beginPath();ctx.arc(cx,cy,sunR,0,7);ctx.fill();
+    ctx.strokeStyle='rgba(249,194,46,.4)';ctx.lineWidth=7;ctx.beginPath();ctx.arc(cx,cy,sunR+6,0,7);ctx.stroke();
+    ctx.fillStyle='#0b0d28';ctx.beginPath();ctx.arc(mx,cy,moonR,0,7);ctx.fill();
+    ctx.fillStyle='#e2e8f0';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText('Bulan',mx,cy-moonR-4);ctx.fillText('Matahari',cx,cy+sunR+16);
+    const d=Math.abs(mx-cx);let msg;
+    if(d>sunR+moonR)msg='☀️ Belum gerhana — Matahari utuh';
+    else if(d<Math.abs(sunR-moonR))msg=(moonR>=sunR)?'🌑 Gerhana TOTAL — Matahari tertutup penuh':'💍 Gerhana CINCIN — tepi Matahari tampak seperti cincin';
+    else msg='🌗 Gerhana SEBAGIAN';
+    st.textContent=msg;
+  }else{
+    const px=W*0.62,penR=54,umR=26,moonR=13,mx=-moonR+t*(W+2*moonR);
+    ctx.fillStyle='rgba(120,130,165,.35)';ctx.beginPath();ctx.arc(px,cy,penR,0,7);ctx.fill();
+    ctx.fillStyle='rgba(8,10,26,.92)';ctx.beginPath();ctx.arc(px,cy,umR,0,7);ctx.fill();
+    ctx.fillStyle='#aeb6cc';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText('umbra',px,cy+3);ctx.fillText('bayangan Bumi',px,cy+penR+13);
+    const d=Math.abs(mx-px);let msg,col='#d7dde8';
+    if(d>penR+moonR)msg='🌕 Belum gerhana — Bulan di luar bayangan';
+    else if(d<=umR-moonR){msg='🌑 Gerhana TOTAL — Bulan penuh di umbra (memerah)';col='#c05a3a';}
+    else if(d<umR+moonR){msg='🌗 Gerhana SEBAGIAN';col='#a86a52';}
+    else{msg='🌘 Gerhana Penumbra — Bulan sedikit meredup';col='#b8bcc9';}
+    ctx.fillStyle=col;ctx.beginPath();ctx.arc(mx,cy,moonR,0,7);ctx.fill();
+    ctx.fillStyle='#e2e8f0';ctx.fillText('Bulan',mx,cy-moonR-4);
+    st.textContent=msg;
+  }
 }
 document.querySelectorAll('#ec-pick button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('#ec-pick button').forEach(x=>x.classList.toggle('on',x===b));eclipse(b.dataset.k);});
+(function(){const sl=document.getElementById('ec-slider');if(sl)sl.oninput=drawEcSim;
+  document.querySelectorAll('#ec-near button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#ec-near button').forEach(x=>x.classList.toggle('on',x===b));ecNear=(b.dataset.m==='dekat');drawEcSim();});})();
 eclipse('matahari');
 
 /* ============ TABEL PERIODIK INTERAKTIF + MODEL ATOM BOHR ============ */
