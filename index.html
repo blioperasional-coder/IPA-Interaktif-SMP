@@ -150,8 +150,8 @@ body[data-subject="spc"] .pick button,body[data-subject="spc"] .tube,body[data-s
 /* orrery */
 .orrery{position:relative;width:100%;max-width:420px;aspect-ratio:1;margin:10px auto;border-radius:50%}
 .orbit{position:absolute;top:50%;left:50%;border:1px dashed rgba(160,160,200,.35);border-radius:50%;
-  transform:translate(-50%,-50%);animation:spin linear infinite}
-.orbit .planet{position:absolute;top:50%;left:0;transform:translate(-50%,-50%);cursor:pointer;
+  transform:translate(-50%,-50%);animation:spin linear infinite;pointer-events:none}
+.orbit .planet{position:absolute;top:50%;left:0;transform:translate(-50%,-50%);cursor:pointer;pointer-events:auto;
   border-radius:50%;box-shadow:0 0 10px rgba(0,0,0,.4);animation:counterspin linear infinite}
 .orbit.paused,.orbit.paused .planet{animation-play-state:paused}
 @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
