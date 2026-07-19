@@ -91,6 +91,9 @@ table.t td:first-child{font-weight:800;white-space:nowrap}
 .note{border-left:5px solid var(--accent);background:var(--accent-t);border-radius:0 14px 14px 0;
   padding:12px 16px;margin:14px 0;font-weight:600}
 .note b{color:var(--accent-d)}
+/* Kotak berlatar tint (accent-t) SELALU terang -> teks dipaksa GELAP supaya tetap
+   terbaca, termasuk di tab Tata Surya yang bertema gelap (--ink jadi terang). */
+.note,.card.tint,.card.tint h4,.card.tint p,.mini.tint,.mini.tint h4,.mini.tint p{color:#1b1a33}
 
 /* interactive shells */
 .lab{background:linear-gradient(180deg,var(--accent-t),var(--card));border:1px solid var(--line);
@@ -149,13 +152,111 @@ body[data-subject="spc"] .pick button,body[data-subject="spc"] .tube,body[data-s
 .orbit{position:absolute;top:50%;left:50%;border:1px dashed rgba(160,160,200,.35);border-radius:50%;
   transform:translate(-50%,-50%);animation:spin linear infinite}
 .orbit .planet{position:absolute;top:50%;left:0;transform:translate(-50%,-50%);cursor:pointer;
-  border-radius:50%;box-shadow:0 0 10px rgba(0,0,0,.4)}
-.orbit.paused{animation-play-state:paused}
+  border-radius:50%;box-shadow:0 0 10px rgba(0,0,0,.4);animation:counterspin linear infinite}
+.orbit.paused,.orbit.paused .planet{animation-play-state:paused}
 @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+/* planet dilawan-putar dgn durasi sama -> label nama TETAP TEGAK saat mengorbit */
+@keyframes counterspin{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(-360deg)}}
+.plabel{position:absolute;top:calc(100% + 3px);left:50%;transform:translateX(-50%);font-size:10px;
+  font-weight:800;white-space:nowrap;color:#eef1ff;text-shadow:0 1px 3px #000,0 0 4px #000;pointer-events:none}
 .sun{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:46px;height:46px;
   border-radius:50%;background:radial-gradient(circle,#fff59d,#f59e0b 60%,#ea580c);
   box-shadow:0 0 30px #f59e0b,0 0 60px rgba(245,158,11,.5)}
 .info-planet{min-height:60px}
+
+/* animasi musim: Bumi berevolusi, sumbu miring 23,5° arah TETAP */
+.seasons{position:relative;width:100%;max-width:340px;aspect-ratio:1;margin:6px auto}
+.seasons .sun2{position:absolute;top:50%;left:50%;width:54px;height:54px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,#fff59d,#f59e0b 60%,#ea580c);box-shadow:0 0 34px #f59e0b,0 0 70px rgba(245,158,11,.45)}
+.seasons .ring{position:absolute;inset:9%;border:1px dashed rgba(170,170,210,.4);border-radius:50%}
+.season-orbit{position:absolute;inset:9%;animation:orbitspin 18s linear infinite}
+@keyframes orbitspin{to{transform:rotate(360deg)}}
+.earth-wrap{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);animation:earthcw 18s linear infinite}
+@keyframes earthcw{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(-360deg)}}
+.earth{width:32px;height:32px;border-radius:50%;position:relative;background:radial-gradient(circle at 34% 30%,#8fd0ff,#2b6fd6 72%);box-shadow:0 0 10px rgba(0,0,0,.45)}
+.earth .axis{position:absolute;left:50%;top:-9px;bottom:-9px;width:2px;background:#fff;transform:translateX(-50%) rotate(23.5deg);border-radius:2px;opacity:.9}
+.earth .axis::before,.earth .axis::after{content:'';position:absolute;left:50%;width:5px;height:5px;border-radius:50%;background:#fff;transform:translateX(-50%)}
+.earth .axis::before{top:-3px}.earth .axis::after{bottom:-3px}
+.spt{position:absolute;font-size:17px;transform:translate(-50%,-50%);filter:drop-shadow(0 1px 2px #000)}
+.spt.n{top:9%;left:50%}.spt.s{top:91%;left:50%}.spt.e{top:50%;left:91%}.spt.w{top:50%;left:9%}
+.seasons.paused .season-orbit,.seasons.paused .earth-wrap{animation-play-state:paused}
+
+/* animasi pasang surut: Bulan mengorbit Bumi, gembungan air (bulge) membesar
+   saat Bulan SEGARIS dgn Matahari (purnama) & mengecil saat TEGAK LURUS (perbani) */
+.tide{position:relative;width:100%;max-width:420px;aspect-ratio:1.5/1;margin:6px auto}
+.tide .axisline{position:absolute;left:0;right:12%;top:50%;height:0;border-top:2px dashed rgba(170,170,210,.35)}
+.tide .tsun{position:absolute;left:1%;top:50%;transform:translate(0,-50%);width:50px;height:50px;border-radius:50%;background:radial-gradient(circle,#fff59d,#f59e0b 60%,#ea580c);box-shadow:0 0 26px #f59e0b}
+.tearthwrap{position:absolute;left:64%;top:50%;transform:translate(-50%,-50%);width:118px;height:118px}
+.tearth{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 34% 30%,#8fd0ff,#2b6fd6 72%);box-shadow:0 0 8px rgba(0,0,0,.4);z-index:2}
+.tide-orbit{position:absolute;inset:0;animation:torbit 14s linear infinite}
+@keyframes torbit{to{transform:rotate(360deg)}}
+.tbulge{position:absolute;left:50%;top:50%;width:135%;height:64%;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(90,165,255,.6),rgba(90,165,255,0) 70%);
+  animation:tidepulse 14s ease-in-out infinite;transform-origin:center}
+@keyframes tidepulse{0%,50%,100%{transform:translate(-50%,-50%) scaleX(1.4)}25%,75%{transform:translate(-50%,-50%) scaleX(.85)}}
+.tmoon{position:absolute;left:100%;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:#d6dae6;box-shadow:0 0 8px rgba(255,255,255,.6);z-index:3}
+.tide.paused .tide-orbit,.tide.paused .tbulge,.tide.paused .tmark{animation-play-state:paused}
+.tlabel{position:absolute;font-size:11px;font-weight:800;color:#eef1ff;text-shadow:0 1px 3px #000}
+/* penanda pasang (ujung gembungan) & surut (sisi tegak lurus), ikut berputar
+   dgn Bulan tapi teksnya di-lawan-putar supaya tetap tegak & terbaca */
+.tmark{position:absolute;font-size:9px;font-weight:800;white-space:nowrap;padding:1px 5px;border-radius:7px;
+  color:#fff;z-index:4;transform:translate(-50%,-50%);animation:tidemark 14s linear infinite}
+@keyframes tidemark{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(-360deg)}}
+.tmark.pasang{background:rgba(37,99,235,.92)}
+.tmark.surut{background:rgba(176,108,28,.94)}
+.tmark.e{left:110%;top:50%}.tmark.w{left:-10%;top:50%}.tmark.n{left:50%;top:-8%}.tmark.s{left:50%;top:108%}
+
+/* ---- visual belajar tambahan (Biologi & Kimia) ---- */
+.viz{background:linear-gradient(180deg,var(--accent-t),var(--card));border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+.viz h4{margin:0 0 6px;color:var(--accent-d);display:flex;gap:8px;align-items:center}
+.viz svg{display:block;margin:auto;max-width:100%;height:auto}
+.viz .cap{font-size:12.5px;color:var(--muted);font-weight:700;margin-top:8px;text-align:center}
+.chain{display:flex;align-items:center;justify-content:center;gap:2px;flex-wrap:wrap}
+.chain .org{font-size:32px;text-align:center;min-width:56px;line-height:1.1}
+.chain .org small{display:block;font-size:11px;font-weight:800;color:var(--muted)}
+.chain .arw{font-size:20px;color:var(--accent-d);animation:arwpulse 3s linear infinite}
+.chain .arw:nth-child(4){animation-delay:.6s}.chain .arw:nth-child(6){animation-delay:1.2s}.chain .arw:nth-child(8){animation-delay:1.8s}
+@keyframes arwpulse{0%,100%{opacity:.3;transform:translateX(0)}50%{opacity:1;transform:translateX(3px)}}
+
+/* ---- Tabel Periodik + model atom Bohr ---- */
+.ptwrap{overflow-x:auto;padding-bottom:6px}
+.ptable{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));gap:2px;min-width:660px}
+.el{aspect-ratio:1;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;border:1px solid rgba(0,0,0,.14);color:#1c1c1c;transition:transform .12s,filter .3s;
+  opacity:0;animation:elin .35s forwards}
+@keyframes elin{to{opacity:1}}
+.el:hover{transform:scale(1.2);z-index:5;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.el .no{font-size:7px;font-weight:700;line-height:1}
+.el .sym{font-size:12px;font-weight:900;line-height:1.05}
+.el.dim{filter:opacity(.15) grayscale(.6)}
+.el.sel{outline:3px solid var(--ink);outline-offset:-1px;z-index:6}
+.pt-ph{grid-row-start:6;font-size:8px;font-weight:800;color:var(--muted);display:flex;align-items:center;justify-content:center;border:1px dashed var(--line);border-radius:4px}
+.pt-spacer{grid-column:1/19;grid-row:8;height:6px}
+.pt-legend{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;font-size:11.5px;font-weight:700}
+.pt-legend .lg{display:inline-flex;align-items:center;gap:5px;cursor:pointer;padding:3px 9px;border-radius:99px;border:1px solid var(--line);background:var(--card)}
+.pt-legend .lg .sw{width:12px;height:12px;border-radius:3px}
+.pt-legend .lg.off{opacity:.4}
+.c-al{background:#ff8787}.c-ae{background:#ffc078}.c-tm{background:#74c0fc}.c-pm{background:#a5d8ff}
+.c-ml{background:#63e6be}.c-nm{background:#b2f2bb}.c-hl{background:#ffe066}.c-ng{background:#d0bfff}
+.c-ln{background:#faa2c1}.c-an{background:#eebefa}
+.bohr{display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:14px}
+.atom{position:relative;width:210px;height:210px;flex:none}
+.nucleus{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;
+  background:radial-gradient(circle,#ff9a6b,#e0592b);display:grid;place-items:center;color:#fff;font-weight:900;font-size:13px;z-index:2;box-shadow:0 0 14px rgba(224,89,43,.6)}
+.shell{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border:1.5px solid rgba(120,130,200,.5);border-radius:50%;animation:spin linear infinite}
+.electron{position:absolute;top:50%;left:50%;width:9px;height:9px;border-radius:50%;background:#4dabf7;box-shadow:0 0 6px #4dabf7}
+
+/* ---- simulasi pembentukan ion / senyawa / campuran ---- */
+.ionsim{position:relative;width:100%;max-width:360px;height:150px;margin:10px auto}
+.atomz{position:absolute;top:50%;transform:translateY(-50%);width:78px;height:78px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:20px;border:3px solid;transition:.4s}
+.atomz.na{left:4px;background:#fff3bf;border-color:#f59e0b;color:#b45309}
+.atomz.cl{right:4px;background:#d3f9d8;border-color:#22c55e;color:#15803d}
+.ionsim .ve{position:absolute;top:38px;left:96px;width:15px;height:15px;border-radius:50%;background:#4dabf7;box-shadow:0 0 9px #4dabf7;transition:left 1.2s ease,top 1.2s ease;z-index:4}
+.ionsim.done .ve{left:250px}
+.ionsim .plus,.ionsim .minus{position:absolute;top:8px;font-weight:900;font-size:16px;opacity:0;transition:opacity .4s .9s}
+.ionsim.done .plus{opacity:1;color:#e0592b}.ionsim.done .minus{opacity:1;color:#2b6fd6}
+.ionsim .plus{left:66px}.ionsim .minus{right:66px}
+.mixbox{position:relative;width:100%;max-width:300px;height:180px;margin:12px auto;border:3px solid var(--line);border-top:0;border-radius:0 0 18px 18px;background:linear-gradient(#d6ecff,#a9d6f0);overflow:hidden}
+.pcl{position:absolute;width:10px;height:10px;border-radius:50%;transition:all 1s ease}
 
 /* eclipse */
 .eclipse-stage{background:#0b0d28;border-radius:16px;padding:20px 10px;position:relative;overflow:hidden}
@@ -196,6 +297,9 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
     <button class="chip" data-topic="bio-reproduksi">🌸 Reproduksi</button>
     <button class="chip" data-topic="bio-klasifikasi">🌿 Klasifikasi & Ekosistem</button>
     <button class="chip" data-topic="bio-sel">🔬 Sel, Tumbuhan & Bioteknologi</button>
+    <button class="chip" data-topic="bio-seljaringan">🧫 Sel & Jaringan Hewan</button>
+    <button class="chip" data-topic="bio-genetika">🧬 Pewarisan Sifat</button>
+    <button class="chip" data-topic="bio-lingkungan">🌍 Pencemaran & Seleksi Alam</button>
   </div>
 
   <!-- Sistem Gerak -->
@@ -229,12 +333,44 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
     </div>
 
     <div class="note">💡 <b>Otot antagonis</b> = bekerja berlawanan. Saat lengan ditekuk (fleksi): <b>bisep kontraksi</b>, trisep relaksasi. Saat diluruskan (ekstensi): sebaliknya. Gerakan lain: <b>pronasi/supinasi</b> (memutar telapak), <b>adduksi/abduksi</b> (mendekat/menjauh dari badan).</div>
+    <div class="viz">
+      <h4>🏋️ Animasi: Otot Bisep &amp; Trisep</h4>
+      <svg viewBox="0 0 240 120" width="260" role="img" aria-label="Lengan menekuk dan lurus">
+        <circle cx="40" cy="55" r="11" fill="#c98b6b"/>
+        <rect x="34" y="46" width="72" height="20" rx="10" fill="#e0a884"/>
+        <ellipse cx="70" cy="44" rx="20" ry="8" fill="#ef5a5a"><animate attributeName="ry" values="6;15;6" dur="3s" repeatCount="indefinite"/></ellipse>
+        <ellipse cx="70" cy="64" rx="18" ry="7" fill="#f4a3a3"><animate attributeName="ry" values="9;5;9" dur="3s" repeatCount="indefinite"/></ellipse>
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="6 104 56;-72 104 56;6 104 56" dur="3s" repeatCount="indefinite"/>
+          <rect x="100" y="47" width="80" height="17" rx="8" fill="#e0a884"/>
+          <circle cx="178" cy="55" r="9" fill="#c98b6b"/>
+        </g>
+        <circle cx="104" cy="56" r="6" fill="#b57a5c"/>
+        <text x="70" y="22" font-size="12" font-weight="800" fill="#c0392b" text-anchor="middle">Bisep</text>
+      </svg>
+      <p class="cap">Saat lengan <b>menekuk</b>: <b style="color:#c0392b">bisep menggembung (kontraksi)</b>, trisep mengendur. Meluruskan = kebalikannya — itulah <b>otot antagonis</b>.</p>
+    </div>
   </div>
 
   <!-- Pencernaan -->
   <div class="topic" id="bio-cerna">
     <h2>Sistem Pencernaan</h2>
     <p class="lead">Makanan diubah jadi zat kecil yang bisa diserap tubuh, dibantu enzim.</p>
+
+    <div class="viz">
+      <h4>🍽️ Animasi: Perjalanan Makanan</h4>
+      <svg viewBox="0 0 230 210" width="200" role="img" aria-label="Saluran pencernaan">
+        <path d="M110 14 L110 66 Q152 74 142 106 Q132 134 100 128 Q70 123 80 148 Q90 168 122 164 Q152 160 124 192" fill="none" stroke="#ecd6b8" stroke-width="15" stroke-linecap="round"/>
+        <path d="M110 14 L110 66 Q152 74 142 106 Q132 134 100 128 Q70 123 80 148 Q90 168 122 164 Q152 160 124 192" fill="none" stroke="#cdaa7d" stroke-width="1.5" stroke-dasharray="3 4"/>
+        <circle r="6" fill="#e0592b"><animateMotion dur="6s" repeatCount="indefinite" rotate="auto" path="M110 14 L110 66 Q152 74 142 106 Q132 134 100 128 Q70 123 80 148 Q90 168 122 164 Q152 160 124 192"/></circle>
+        <text x="118" y="18" font-size="10" font-weight="800" fill="#6b4f2a">Mulut</text>
+        <text x="118" y="50" font-size="10" font-weight="800" fill="#6b4f2a">Kerongkongan</text>
+        <text x="150" y="102" font-size="10" font-weight="800" fill="#6b4f2a">Lambung</text>
+        <text x="4" y="150" font-size="10" font-weight="800" fill="#6b4f2a">Usus halus</text>
+        <text x="128" y="196" font-size="10" font-weight="800" fill="#6b4f2a">Usus besar</text>
+      </svg>
+      <p class="cap">Titik oranye = makanan. Alurnya: <b>mulut → kerongkongan → lambung → usus halus</b> (diserap) → <b>usus besar</b>.</p>
+    </div>
 
     <div class="lab">
       <h3>🧪 Lab Uji Makanan</h3>
@@ -256,6 +392,30 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
     </div>
 
     <h3>⚙️ Enzim Pencernaan</h3>
+    <div class="viz">
+      <h4>🧭 Di mana enzim dibuat?</h4>
+      <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:center">
+        <svg viewBox="0 0 150 210" width="135" role="img" aria-label="Organ penghasil enzim">
+          <rect x="70" y="24" width="8" height="50" fill="#e6d3b6"/>
+          <ellipse cx="74" cy="16" rx="16" ry="9" fill="#3b82f6"/>
+          <text x="74" y="19.5" font-size="9" font-weight="800" fill="#fff" text-anchor="middle">Mulut</text>
+          <path d="M92 64 Q132 58 130 90 Q112 99 92 90 Z" fill="#a855f7"/>
+          <text x="111" y="82" font-size="8.5" font-weight="800" fill="#fff" text-anchor="middle">Hati</text>
+          <path d="M74 72 Q104 72 100 102 Q96 124 74 120 Q56 116 60 96 Q62 80 74 72 Z" fill="#f59e0b"/>
+          <text x="79" y="100" font-size="9" font-weight="800" fill="#fff" text-anchor="middle">Lambung</text>
+          <ellipse cx="86" cy="130" rx="33" ry="10" fill="#22c55e" transform="rotate(-8 86 130)"/>
+          <text x="86" y="133" font-size="8.5" font-weight="800" fill="#fff" text-anchor="middle">Pankreas</text>
+          <path d="M74 120 Q120 138 96 163 Q62 178 90 198" fill="none" stroke="#e6c69a" stroke-width="12" stroke-linecap="round"/>
+        </svg>
+        <div style="flex:1;min-width:210px;display:grid;gap:8px;font-size:14px">
+          <div style="border:1px solid var(--line);border-left:5px solid #3b82f6;border-radius:8px;padding:7px 11px">🔵 <b>Mulut</b> — Ptialin <span style="color:var(--muted)">(amilum→maltosa)</span></div>
+          <div style="border:1px solid var(--line);border-left:5px solid #f59e0b;border-radius:8px;padding:7px 11px">🟠 <b>Lambung</b> — Pepsin, Renin, HCl</div>
+          <div style="border:1px solid var(--line);border-left:5px solid #22c55e;border-radius:8px;padding:7px 11px">🟢 <b>Pankreas</b> — Amilase, Tripsin, Lipase</div>
+          <div style="border:1px solid var(--line);border-left:5px solid #a855f7;border-radius:8px;padding:7px 11px">🟣 <b>Hati</b> — Empedu <span style="color:var(--muted)">(mengemulsi lemak)</span></div>
+        </div>
+      </div>
+      <p class="cap">Warna organ pada gambar cocok dengan warna daftar enzimnya — cocokkan dengan tabel di bawah!</p>
+    </div>
     <div class="tbl-wrap"><table class="t">
       <tr><th>Enzim</th><th>Letak</th><th>Fungsi</th></tr>
       <tr><td>Ptialin</td><td>Mulut</td><td>Amilum → maltosa</td></tr>
@@ -266,6 +426,17 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       <tr><td>Lipase</td><td>Pankreas</td><td>Lemak → asam lemak &amp; gliserol</td></tr>
       <tr><td>Empedu</td><td>Hati</td><td>Mengemulsi lemak</td></tr>
       <tr><td>HCl</td><td>Lambung</td><td>Membunuh kuman, mengasamkan makanan, mengaktifkan pepsinogen→pepsin</td></tr>
+      <tr><td>Erepsin</td><td>Usus halus</td><td>Mengubah protein (pepton) → asam amino</td></tr>
+      <tr><td>Enterokinase</td><td>Usus halus</td><td>Mengaktifkan tripsinogen → tripsin</td></tr>
+    </table></div>
+
+    <h3>🫙 Organ Pencernaan &amp; Fungsinya</h3>
+    <div class="tbl-wrap"><table class="t">
+      <tr><th>Organ</th><th>Fungsi</th></tr>
+      <tr><td>Usus halus</td><td>Penyerapan sari-sari makanan</td></tr>
+      <tr><td>Usus besar</td><td>Mengatur kadar air, pembusukan sisa (oleh bakteri E. coli), membentuk vitamin K</td></tr>
+      <tr><td>Rektum</td><td>Menyimpan feses sementara</td></tr>
+      <tr><td>Epiglotis</td><td>Menutup tenggorokan (batang tenggorok) saat menelan</td></tr>
     </table></div>
 
     <h3>🩺 Gangguan Pencernaan</h3>
@@ -273,6 +444,8 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       <div class="mini"><h4>Konstipasi (sembelit)</h4><p>Susah buang air besar.</p></div>
       <div class="mini"><h4>Diare</h4><p>BAB terus-menerus karena bakteri; penyerapan air di usus besar terganggu.</p></div>
       <div class="mini"><h4>Tukak Lambung / Maag</h4><p>Lambung nyeri &amp; luka, feses cokelat berdarah.</p></div>
+      <div class="mini"><h4>Kolitis</h4><p>Radang usus oleh bakteri; demam, diare berdarah.</p></div>
+      <div class="mini"><h4>Gastritis</h4><p>Perut kembung, mual, muntah, nyeri ulu hati.</p></div>
       <div class="mini"><h4>Apendisitis</h4><p>Radang umbai cacing; nyeri perut kanan bawah.</p></div>
     </div>
   </div>
@@ -309,6 +482,26 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       <tr><td>Isi darah</td><td>Kaya O₂ (kecuali arteri pulmonalis)</td><td>Kaya CO₂ (kecuali vena pulmonalis)</td></tr>
     </table></div>
     <div class="note">💡 <b>Kapiler</b> menghubungkan arteri &amp; vena, dindingnya tipis untuk tempat pertukaran O₂ dan CO₂. Tekanan <b>sistol</b> (bilik memompa) = 120, <b>diastol</b> (jantung relaksasi) = 80.</div>
+
+    <h3>🫀 Struktur Jantung &amp; Jalur Peredaran</h3>
+    <div class="grid g2">
+      <div class="mini"><h4>4 Ruang Jantung</h4><p><b>Serambi (atrium)</b> kanan &amp; kiri di atas; <b>Bilik (ventrikel)</b> kanan &amp; kiri di bawah. Katup <b>trikuspidalis</b> (kanan) &amp; <b>bikuspidalis</b> (kiri) menjaga darah tak balik.</p></div>
+      <div class="mini"><h4>Pembuluh Besar</h4><p><b>Aorta</b> (bilik kiri→tubuh), <b>arteri/vena pulmonalis</b> (ke/dari paru), <b>vena cava</b> (dari tubuh→serambi kanan).</p></div>
+    </div>
+    <div class="grid g2">
+      <div class="mini tint" style="background:var(--accent-t)"><h4>🔴 Peredaran Besar</h4><p>Bilik kiri → aorta → seluruh tubuh → vena cava → serambi kanan.</p></div>
+      <div class="mini tint" style="background:var(--accent-t)"><h4>🫁 Peredaran Kecil</h4><p>Bilik kanan → arteri pulmonalis → paru-paru → vena pulmonalis → serambi kiri.</p></div>
+    </div>
+
+    <h3>🩹 Gangguan Peredaran Darah</h3>
+    <div class="grid g3">
+      <div class="mini"><h4>Varises</h4><p>Pelebaran vena (sering di kaki) → tekanan darah lambat/rendah.</p></div>
+      <div class="mini"><h4>Aterosklerosis</h4><p>Penyumbatan pembuluh oleh <b>lemak</b> → tekanan darah naik. (Arteriosklerosis = oleh zat kapur.)</p></div>
+      <div class="mini"><h4>Anemia</h4><p>Kekurangan sel darah merah / Hb.</p></div>
+      <div class="mini"><h4>Leukemia</h4><p>Sel darah putih terlalu banyak (kanker darah).</p></div>
+      <div class="mini"><h4>Hemofilia</h4><p>Darah sukar membeku (keturunan).</p></div>
+      <div class="mini"><h4>Thalasemia</h4><p>Hemoglobin abnormal (keturunan).</p></div>
+    </div>
   </div>
 
   <!-- Pernapasan -->
@@ -343,6 +536,17 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       <div class="mini"><h4>Kapasitas Vital</h4><p>Tidal+komplementer+suplementer — 3.500 mL</p></div>
       <div class="mini"><h4>Kapasitas Total</h4><p>Vital + residu — 4.500 mL</p></div>
     </div>
+
+    <h3>🌬️ Organ Pernapasan</h3>
+    <div class="grid g3">
+      <div class="mini"><h4>Hidung + Silia</h4><p>Menyaring, menghangatkan &amp; melembapkan udara.</p></div>
+      <div class="mini"><h4>Trakea &amp; Bronkus</h4><p>Saluran udara menuju paru-paru.</p></div>
+      <div class="mini"><h4>Alveolus</h4><p>Tempat <b>difusi</b> gas (O₂ masuk darah, CO₂ keluar).</p></div>
+      <div class="mini"><h4>Pleura</h4><p>Selaput pembungkus &amp; pelindung paru-paru.</p></div>
+      <div class="mini"><h4>Diafragma</h4><p>Otot bantu pernapasan (pernapasan perut).</p></div>
+      <div class="mini"><h4>Bronkiolus</h4><p>Cabang halus bronkus menuju alveolus.</p></div>
+    </div>
+    <div class="note">🧪 <b>Percobaan:</b> udara pernapasan mengandung <b>CO₂</b> — dibuktikan dengan <b>air kapur (CaOH)</b> yang menjadi keruh (terbentuk endapan CaCO₃).</div>
   </div>
 
   <!-- Ekskresi -->
@@ -362,6 +566,20 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       <div class="mini tint" style="background:var(--accent-t)"><h4>1. Filtrasi</h4><p>Penyaringan darah di <b>glomerulus</b> → urin primer (air, urea, glukosa, asam amino).</p></div>
       <div class="mini tint" style="background:var(--accent-t)"><h4>2. Reabsorpsi</h4><p>Penyerapan kembali zat berguna di <b>tubulus</b> → urin sekunder (air, urea).</p></div>
       <div class="mini tint" style="background:var(--accent-t)"><h4>3. Augmentasi</h4><p>Penambahan zat sisa → <b>urin sebenarnya</b> (air, urea, vitamin, asam urat, obat).</p></div>
+    </div>
+    <div class="viz">
+      <h4>💧 Animasi: Pembentukan Urin di Nefron</h4>
+      <svg viewBox="0 0 300 120" width="300" role="img" aria-label="Alur pembentukan urin">
+        <path d="M20 45 H95 Q120 45 120 68 Q120 90 150 90 Q185 90 200 62 Q212 40 285 40" fill="none" stroke="#cfe0ef" stroke-width="13" stroke-linecap="round"/>
+        <circle r="6" fill="#d33">
+          <animateMotion dur="5s" repeatCount="indefinite" path="M20 45 H95 Q120 45 120 68 Q120 90 150 90 Q185 90 200 62 Q212 40 285 40"/>
+          <animate attributeName="fill" values="#d33;#d33;#e0a020;#eecb00;#8fbf3f" keyTimes="0;0.25;0.5;0.75;1" dur="5s" repeatCount="indefinite"/>
+        </circle>
+        <text x="24" y="30" font-size="10.5" font-weight="800" fill="#15803d">1 Filtrasi</text>
+        <text x="112" y="112" font-size="10.5" font-weight="800" fill="#15803d">2 Reabsorpsi</text>
+        <text x="228" y="30" font-size="10.5" font-weight="800" fill="#15803d">3 Augmentasi</text>
+      </svg>
+      <p class="cap">Tetes darah (merah) disaring → diserap ulang → ditambah zat sisa → menjadi <b>urin</b> (hijau).</p>
     </div>
     <div class="note">🩺 Penyakit ginjal: <b>Nefritis</b> (radang), <b>Diabetes melitus</b> (ada glukosa di urin — rusak di glomerulus), <b>Albuminuria</b> (ada protein), <b>Batu ginjal</b> (endapan kalsium), <b>Diabetes insipidus</b> (pipis terus, kekurangan hormon ADH).</div>
   </div>
@@ -416,6 +634,22 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       </div>
     </div>
 
+    <div class="viz">
+      <h4>🔗 Animasi: Rantai Makanan</h4>
+      <div class="chain">
+        <div class="org">🌾<small>Padi</small></div>
+        <div class="arw">➜</div>
+        <div class="org">🦗<small>Belalang</small></div>
+        <div class="arw">➜</div>
+        <div class="org">🐸<small>Katak</small></div>
+        <div class="arw">➜</div>
+        <div class="org">🐍<small>Ular</small></div>
+        <div class="arw">➜</div>
+        <div class="org">🦅<small>Elang</small></div>
+      </div>
+      <p class="cap">Energi mengalir dari <b>produsen</b> (padi) → konsumen I → II → III → IV. Panah menyala berurutan mengikuti aliran energi.</p>
+    </div>
+
     <h3>🧬 Urutan Takson</h3>
     <p><span class="tag">Kingdom</span>→<span class="tag">Filum/Divisi</span>→<span class="tag">Kelas</span>→<span class="tag">Ordo</span>→<span class="tag">Famili</span>→<span class="tag">Genus</span>→<span class="tag">Spesies</span></p>
     <p class="lead">Makin ke spesies → anggota makin <b>sedikit</b> tapi kekerabatan makin <b>dekat</b>.</p>
@@ -429,6 +663,23 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       <div class="mini"><h4>Homoioterm</h4><p>Berdarah panas: aves, mamalia.</p></div>
       <div class="mini"><h4>Dikotil vs Monokotil</h4><p>Akar tunggang &amp; berkambium vs akar serabut &amp; tak berkambium.</p></div>
     </div>
+
+    <h3>🌾 Monokotil vs Dikotil (Rinci)</h3>
+    <div class="tbl-wrap"><table class="t">
+      <tr><th>Ciri</th><th>Monokotil</th><th>Dikotil</th></tr>
+      <tr><td>Akar</td><td>Serabut</td><td>Tunggang</td></tr>
+      <tr><td>Tulang daun</td><td>Sejajar / melengkung</td><td>Menyirip / menjari</td></tr>
+      <tr><td>Batang</td><td>Tidak berkambium, tak bercabang</td><td>Berkambium, bercabang</td></tr>
+      <tr><td>Kelipatan mahkota</td><td>3</td><td>2, 4, atau 5</td></tr>
+      <tr><td>Contoh</td><td>Padi, kelapa, jagung</td><td>Mangga, kacang, pepaya</td></tr>
+    </table></div>
+
+    <h3>🌍 Komponen Ekosistem</h3>
+    <div class="grid g2">
+      <div class="mini tint" style="background:var(--accent-t)"><h4>Biotik (hidup)</h4><p>Semua makhluk hidup: tumbuhan, hewan, bakteri, jamur.</p></div>
+      <div class="mini tint" style="background:var(--accent-t)"><h4>Abiotik (tak hidup)</h4><p>Faktor fisik: air, udara, tanah, cahaya, suhu, batu.</p></div>
+    </div>
+    <div class="note">🍃 Peran dalam ekosistem: <b>Produsen</b> (tumbuhan, membuat makanan) → <b>Konsumen</b> (pemakan) → <b>Pengurai/dekomposer</b> (bakteri &amp; jamur, menguraikan sisa).</div>
   </div>
 
   <!-- Sel, Tumbuhan & Bioteknologi -->
@@ -446,11 +697,42 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       <div class="mini"><h4>Kolenkim &amp; Sklerenkim</h4><p>Penguat tumbuhan muda &amp; tua.</p></div>
     </div>
 
+    <h3>🌱 Struktur Akar &amp; Pengangkutan Air</h3>
+    <div class="grid g3">
+      <div class="mini"><h4>Tudung akar</h4><p>Melindungi titik tumbuh akar.</p></div>
+      <div class="mini"><h4>Rambut akar</h4><p>Memperluas bidang penyerapan air.</p></div>
+      <div class="mini"><h4>Zona pembelahan</h4><p>Sel aktif membelah (pertumbuhan).</p></div>
+    </div>
+    <div class="note">💧 <b>Naiknya air</b> dari akar ke daun karena 3 gaya: <b>daya tekan akar</b> (mendorong dari bawah) → <b>kapilaritas batang</b> (naik lewat pembuluh xilem yang sempit) → <b>daya isap daun</b> (transpirasi menarik air ke atas).</div>
+
     <h3>🌞 Fotosintesis</h3>
     <div class="card tint">
       <p style="font-size:17px;font-weight:800;text-align:center;margin:0">6CO₂ + 6H₂O <span style="color:var(--accent-d)">→(cahaya + klorofil)→</span> C₆H₁₂O₆ + 6O₂</p>
       <p class="hint" style="text-align:center;margin:8px 0 0">Percobaan <b>Sachs</b> membuktikan fotosintesis menghasilkan amilum (daun jadi biru-hitam saat ditetesi lugol).</p>
     </div>
+    <div class="viz">
+      <h4>🌞 Animasi: Proses Fotosintesis</h4>
+      <svg viewBox="0 0 260 170" width="250" role="img" aria-label="Proses fotosintesis">
+        <circle cx="36" cy="32" r="17" fill="#f6c026"/>
+        <g stroke="#f6c026" stroke-width="3" stroke-linecap="round">
+          <line x1="36" y1="6" x2="36" y2="12"/><line x1="14" y1="14" x2="18" y2="18"/><line x1="10" y1="32" x2="16" y2="32"/><line x1="58" y1="14" x2="54" y2="18"/>
+          <animate attributeName="opacity" values="1;.4;1" dur="1.6s" repeatCount="indefinite"/>
+        </g>
+        <line x1="52" y1="44" x2="118" y2="82" stroke="#f6c026" stroke-width="3" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" values="20;0" dur="0.8s" repeatCount="indefinite"/></line>
+        <ellipse cx="150" cy="96" rx="56" ry="34" fill="#3faf5a"/>
+        <path d="M98 96 Q150 88 202 96" stroke="#2b8a44" stroke-width="2" fill="none"/>
+        <text x="150" y="100" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">C₆H₁₂O₆</text>
+        <text x="214" y="66" font-size="12" font-weight="800" fill="#777">CO₂</text>
+        <circle r="4" fill="#9aa0aa"><animateMotion dur="3s" repeatCount="indefinite" path="M224 70 Q185 84 154 94"/></circle>
+        <text x="126" y="166" font-size="12" font-weight="800" fill="#2b6fd6">H₂O</text>
+        <circle r="4" fill="#3b82f6"><animateMotion dur="3s" repeatCount="indefinite" path="M150 158 L150 100"/></circle>
+        <text x="92" y="58" font-size="12" font-weight="800" fill="#16a34a">O₂</text>
+        <circle r="4" fill="#22c55e"><animateMotion dur="3s" repeatCount="indefinite" path="M148 92 Q118 70 100 56"/></circle>
+      </svg>
+      <p class="cap">Daun menyerap <b style="color:#e0a800">cahaya</b> + <b style="color:#777">CO₂</b> + <b style="color:#2b6fd6">air</b> → membentuk <b>glukosa</b> dan melepas <b style="color:#16a34a">oksigen (O₂)</b>.</p>
+    </div>
+
+    <div class="note">🧪 Percobaan <b>Ingenhousz</b> (tanaman air Hydrilla) membuktikan fotosintesis menghasilkan <b>oksigen</b> (muncul gelembung gas). Laju fotosintesis dipengaruhi <b>cahaya</b> &amp; <b>kadar CO₂</b> (mis. penambahan NaHCO₃). Oksigennya diuji dengan bara lidi yang <b>menyala kembali</b>.</div>
 
     <h3>🧫 Bioteknologi</h3>
     <div class="grid g2">
@@ -458,8 +740,185 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       <div class="mini"><h4>Konvensional (fermentasi)</h4><p>Tempe (<i>Rhizopus</i>), kecap (<i>Aspergillus wentii</i>), yogurt (<i>Lactobacillus</i>), nata de coco (<i>Acetobacter</i>), tape.</p></div>
     </div>
 
+    <h3>🐣 Perkembangbiakan Vegetatif (Tak Kawin)</h3>
+    <div class="grid g4">
+      <div class="mini"><div class="ic">➗</div><h4>Membelah diri</h4><p>Satu sel → dua. Contoh: Amoeba, bakteri.</p></div>
+      <div class="mini"><div class="ic">🧩</div><h4>Fragmentasi</h4><p>Tubuh terpotong → jadi individu baru. Contoh: Planaria.</p></div>
+      <div class="mini"><div class="ic">🌱</div><h4>Tunas</h4><p>Tumbuh tunas dari tubuh induk. Contoh: Hydra, ragi.</p></div>
+      <div class="mini"><div class="ic">🔗</div><h4>Konjugasi</h4><p>Tukar materi inti antar dua individu. Contoh: Spirogyra, Paramecium.</p></div>
+    </div>
+
     <h3>🔬 Bagian Mikroskop</h3>
-    <p><span class="tag">Lensa okuler</span><span class="tag">Lensa objektif</span><span class="tag">Revolver</span><span class="tag">Diafragma</span><span class="tag">Kondensor</span><span class="tag">Cermin</span><span class="tag">Meja sediaan</span><span class="tag">Makrometer</span><span class="tag">Mikrometer</span></p>
+    <div class="card" style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:center">
+      <svg viewBox="0 0 260 400" style="width:210px;max-width:58vw;flex:none" role="img" aria-label="Diagram bagian mikroskop">
+        <!-- kaki / base -->
+        <ellipse cx="126" cy="382" rx="86" ry="14" fill="#b8c2d0"/>
+        <path d="M92 306 h68 v52 a16 16 0 0 1 -16 16 h-36 a16 16 0 0 1 -16 -16 z" fill="#d3dae4"/>
+        <!-- lengan -->
+        <path d="M146 150 q58 42 46 168 l-19 0 q9 -122 -43 -152 z" fill="#e6ebf2" stroke="#9aa6b8" stroke-width="1.5"/>
+        <!-- pilar penyangga -->
+        <rect x="119" y="196" width="14" height="150" fill="#c4cdd9"/>
+        <!-- okuler [1] -->
+        <rect x="113" y="26" width="26" height="34" rx="7" fill="#5b6b82"/>
+        <!-- tabung [2] -->
+        <rect x="113" y="56" width="26" height="66" fill="#8593a8"/>
+        <!-- revolver [3] -->
+        <ellipse cx="126" cy="128" rx="30" ry="11" fill="#3f4b5e"/>
+        <!-- lensa objektif [4] -->
+        <path d="M108 132 l8 20 l8 -20 z" fill="#2b3444"/><path d="M126 134 l7 22 l7 -22 z" fill="#2b3444"/>
+        <!-- meja sediaan [5] -->
+        <rect x="78" y="180" width="96" height="14" rx="3" fill="#5b6b82"/><circle cx="126" cy="187" r="6" fill="#fff"/>
+        <!-- diafragma [6] -->
+        <ellipse cx="126" cy="206" rx="14" ry="5" fill="#8593a8"/>
+        <!-- kondensor [7] -->
+        <path d="M114 210 h24 l-5 16 h-14 z" fill="#6b7a91"/>
+        <!-- cermin [8] -->
+        <g transform="rotate(-20 126 292)"><ellipse cx="126" cy="292" rx="19" ry="9" fill="#cdd6e2" stroke="#9aa6b8"/></g>
+        <!-- makrometer [9] -->
+        <circle cx="192" cy="238" r="19" fill="#4a566b"/><circle cx="192" cy="238" r="7" fill="#7b8aa0"/>
+        <!-- mikrometer [10] -->
+        <circle cx="192" cy="278" r="11" fill="#5b6b82"/>
+        <!-- nomor label -->
+        <g font-size="12" font-weight="800" font-family="sans-serif" text-anchor="middle">
+          <g><circle cx="163" cy="40" r="10" fill="#16a34a"/><text x="163" y="44" fill="#fff">1</text></g>
+          <g><circle cx="163" cy="86" r="10" fill="#16a34a"/><text x="163" y="90" fill="#fff">2</text></g>
+          <g><circle cx="88"  cy="122" r="10" fill="#16a34a"/><text x="88" y="126" fill="#fff">3</text></g>
+          <g><circle cx="163" cy="150" r="10" fill="#16a34a"/><text x="163" y="154" fill="#fff">4</text></g>
+          <g><circle cx="62"  cy="187" r="10" fill="#16a34a"/><text x="62" y="191" fill="#fff">5</text></g>
+          <g><circle cx="163" cy="208" r="10" fill="#16a34a"/><text x="163" y="212" fill="#fff">6</text></g>
+          <g><circle cx="163" cy="230" r="10" fill="#16a34a"/><text x="163" y="234" fill="#fff">7</text></g>
+          <g><circle cx="86"  cy="300" r="10" fill="#16a34a"/><text x="86" y="304" fill="#fff">8</text></g>
+          <g><circle cx="226" cy="238" r="10" fill="#16a34a"/><text x="226" y="242" fill="#fff">9</text></g>
+          <g><circle cx="222" cy="286" r="10" fill="#16a34a"/><text x="222" y="290" fill="#fff">10</text></g>
+        </g>
+      </svg>
+      <ol style="flex:1;min-width:220px;margin:0;padding-left:24px;font-size:13.5px;font-weight:600;line-height:1.7">
+        <li><b>Lensa okuler</b> — dekat mata, memperbesar bayangan</li>
+        <li><b>Tabung</b> — menghubungkan okuler &amp; objektif</li>
+        <li><b>Revolver</b> — memutar/memilih lensa objektif</li>
+        <li><b>Lensa objektif</b> — dekat objek, memperbesar benda</li>
+        <li><b>Meja sediaan</b> — tempat meletakkan preparat</li>
+        <li><b>Diafragma</b> — mengatur banyak sedikitnya cahaya</li>
+        <li><b>Kondensor</b> — memusatkan cahaya ke objek</li>
+        <li><b>Cermin</b> — memantulkan cahaya ke objek</li>
+        <li><b>Makrometer</b> — pemutar kasar (fokus cepat)</li>
+        <li><b>Mikrometer</b> — pemutar halus (fokus lambat)</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Sel & Jaringan Hewan -->
+  <div class="topic" id="bio-seljaringan">
+    <h2>Sel &amp; Jaringan Hewan</h2>
+    <p class="lead">Sel = unit terkecil kehidupan. Kumpulan sel sejenis membentuk jaringan.</p>
+
+    <h3>🔬 Sel Hewan vs Sel Tumbuhan</h3>
+    <div class="viz">
+      <h4>Bandingkan kedua sel</h4>
+      <div style="display:flex;gap:22px;flex-wrap:wrap;justify-content:center">
+        <svg viewBox="0 0 130 140" width="140" role="img" aria-label="Sel hewan">
+          <ellipse cx="65" cy="66" rx="58" ry="52" fill="#ffe1e8" stroke="#e57ea0" stroke-width="2"/>
+          <circle cx="58" cy="62" r="17" fill="#c77dff"/><circle cx="58" cy="62" r="6" fill="#8a4fc4"/>
+          <ellipse cx="96" cy="82" rx="12" ry="6" fill="#ef8a8a"/><ellipse cx="40" cy="96" rx="11" ry="5" fill="#ef8a8a"/>
+          <circle cx="92" cy="46" r="4" fill="#5ab0e0"/><circle cx="34" cy="52" r="4" fill="#5ab0e0"/>
+          <text x="65" y="135" font-size="11" font-weight="800" fill="#c0392b" text-anchor="middle">Sel Hewan</text>
+        </svg>
+        <svg viewBox="0 0 130 140" width="140" role="img" aria-label="Sel tumbuhan">
+          <rect x="6" y="8" width="118" height="112" rx="6" fill="#c9e8c0" stroke="#3faf5a" stroke-width="5"/>
+          <rect x="30" y="34" width="72" height="66" rx="6" fill="#bfe0f5"/>
+          <circle cx="58" cy="24" r="11" fill="#c77dff"/>
+          <ellipse cx="108" cy="58" rx="7" ry="4" fill="#2b8a44"/><ellipse cx="20" cy="80" rx="7" ry="4" fill="#2b8a44"/>
+          <text x="65" y="135" font-size="11" font-weight="800" fill="#15803d" text-anchor="middle">Sel Tumbuhan</text>
+        </svg>
+      </div>
+      <p class="cap">Sel tumbuhan punya <b>dinding sel</b> (hijau tebal), <b>kloroplas</b>, &amp; <b>vakuola besar</b> (biru). Sel hewan tidak.</p>
+    </div>
+    <div class="tbl-wrap"><table class="t">
+      <tr><th>Bagian</th><th>Sel Hewan</th><th>Sel Tumbuhan</th></tr>
+      <tr><td>Dinding sel</td><td>Tidak ada</td><td>Ada (selulosa)</td></tr>
+      <tr><td>Kloroplas</td><td>Tidak ada</td><td>Ada (untuk fotosintesis)</td></tr>
+      <tr><td>Vakuola</td><td>Kecil/tak ada</td><td>Besar</td></tr>
+      <tr><td>Bentuk</td><td>Berubah-ubah</td><td>Tetap (kaku)</td></tr>
+    </table></div>
+
+    <h3>⚙️ Organel Sel &amp; Fungsinya</h3>
+    <div class="grid g3">
+      <div class="mini"><h4>Inti sel (Nukleus)</h4><p>Pengatur seluruh kegiatan sel</p></div>
+      <div class="mini"><h4>Mitokondria</h4><p>Respirasi sel — penghasil energi</p></div>
+      <div class="mini"><h4>Kloroplas</h4><p>Fotosintesis (hanya tumbuhan)</p></div>
+      <div class="mini"><h4>Ribosom</h4><p>Sintesis protein</p></div>
+      <div class="mini"><h4>Retikulum Endoplasma</h4><p>Sintesis protein &amp; transportasi zat</p></div>
+      <div class="mini"><h4>Badan Golgi</h4><p>Sekresi (pengeluaran) zat</p></div>
+      <div class="mini"><h4>Lisosom</h4><p>Pencernaan di dalam sel</p></div>
+      <div class="mini"><h4>Vakuola</h4><p>Menyimpan cadangan makanan</p></div>
+      <div class="mini"><h4>Membran sel</h4><p>Mengatur keluar-masuknya zat</p></div>
+    </div>
+
+    <h3>🧩 Jaringan Hewan</h3>
+    <div class="grid g2">
+      <div class="mini"><h4>Jaringan Epitel</h4><p>Melapisi &amp; melindungi permukaan tubuh/organ</p></div>
+      <div class="mini"><h4>Jaringan Otot</h4><p>Alat gerak aktif (polos, lurik, jantung)</p></div>
+      <div class="mini"><h4>Jaringan Tulang</h4><p>Alat gerak pasif, menyokong tubuh</p></div>
+      <div class="mini"><h4>Jaringan Darah</h4><p>Angkut O₂ &amp; sari makanan, bekukan darah, bunuh kuman</p></div>
+      <div class="mini"><h4>Jaringan Saraf</h4><p>Menghantarkan rangsang (impuls)</p></div>
+      <div class="mini"><h4>Jaringan Adiposa (lemak)</h4><p>Cadangan makanan, atur suhu, bantalan organ</p></div>
+    </div>
+    <div class="fact"><b>🤓 Fun Fact</b>Tubuh manusia tersusun dari sekitar 37 triliun sel!</div>
+    <div class="tips"><b>🧠 Tips Mengingat</b>Mitokondria = "MItra tenaga" (energi). Ribosom = "Rakit protein". Lisosom = "peLIcin/pencerna".</div>
+  </div>
+
+  <!-- Pewarisan Sifat -->
+  <div class="topic" id="bio-genetika">
+    <h2>Pewarisan Sifat (Genetika)</h2>
+    <p class="lead">Bagaimana sifat orang tua diturunkan ke anak-anaknya — ditemukan oleh Gregor Mendel.</p>
+
+    <h3>📖 Istilah Penting</h3>
+    <div class="grid g2">
+      <div class="mini"><h4>Gen &amp; Alel</h4><p>Gen = pembawa sifat; alel = pasangannya (mis. B &amp; b)</p></div>
+      <div class="mini"><h4>Genotip</h4><p>Susunan gen (BB, Bb, bb)</p></div>
+      <div class="mini"><h4>Fenotip</h4><p>Sifat yang tampak (tinggi, pendek, warna)</p></div>
+      <div class="mini"><h4>Dominan &amp; Resesif</h4><p>Dominan (huruf BESAR) menutupi resesif (kecil)</p></div>
+      <div class="mini"><h4>Homozigot</h4><p>Alel sama: BB (dominan) / bb (resesif)</p></div>
+      <div class="mini"><h4>Heterozigot</h4><p>Alel berbeda: Bb</p></div>
+    </div>
+
+    <h3>🔲 Persilangan Monohibrid (1 sifat)</h3>
+    <p>Contoh: mangga <b>Manis (MM)</b> × <b>Masam (mm)</b> → F1 semua <b>Mm (manis)</b>. Lalu F1 × F1 (Mm × Mm):</p>
+    <div class="viz">
+      <h4>Diagram Punnett — Mm × Mm</h4>
+      <table class="t" style="max-width:300px;margin:auto;text-align:center">
+        <tr><th style="background:var(--card)"></th><th>M</th><th>m</th></tr>
+        <tr><th>M</th><td style="background:#dcfce7"><b>MM</b><br><small>manis</small></td><td style="background:#dcfce7"><b>Mm</b><br><small>manis</small></td></tr>
+        <tr><th>m</th><td style="background:#dcfce7"><b>Mm</b><br><small>manis</small></td><td style="background:#fee2e2"><b>mm</b><br><small>masam</small></td></tr>
+      </table>
+      <p class="cap">Perbandingan fenotip F2 = <b>3 Manis : 1 Masam</b> · genotip = 1 MM : 2 Mm : 1 mm.</p>
+    </div>
+
+    <h3>🔳 Persilangan Dihibrid (2 sifat)</h3>
+    <p>Contoh (soal PDF): padi <b>tinggi-bulir besar (PPBB)</b> × <b>pendek-bulir kecil (ppbb)</b> → F1 semua <b>PpBb</b>. F1 × F1 → perbandingan fenotip F2 = <b>9 : 3 : 3 : 1</b>.</p>
+    <div class="note">🔑 Jumlah macam gamet = <b>2ⁿ</b> (n = jumlah sifat heterozigot). <b>PpBb</b> → 2² = <b>4 gamet</b>: PB, Pb, pB, pb.</div>
+    <div class="fact"><b>🤓 Fun Fact</b>Mendel menemukan hukum pewarisan sifat dari percobaan menyilangkan <b>kacang ercis (kapri)</b>.</div>
+    <div class="tips"><b>🧠 Tips</b>Huruf BESAR = dominan (menang tampil). Untuk hitung gamet, pisahkan tiap pasangan: Pp→(P,p), Bb→(B,b), lalu kombinasikan.</div>
+  </div>
+
+  <!-- Pencemaran & Seleksi Alam -->
+  <div class="topic" id="bio-lingkungan">
+    <h2>Pencemaran Lingkungan &amp; Seleksi Alam</h2>
+    <p class="lead">Dampak aktivitas manusia pada lingkungan, dan bagaimana alam menyeleksi makhluk hidup.</p>
+
+    <h3>🏭 Pencemaran &amp; Dampaknya</h3>
+    <div class="grid g2">
+      <div class="mini"><h4>CO₂ berlebih</h4><p>Efek rumah kaca → <b>pemanasan global</b></p></div>
+      <div class="mini"><h4>Gas CO (karbon monoksida)</h4><p><b>Asfiksi</b> — Hb mengikat CO lebih kuat dari O₂ → sesak napas</p></div>
+      <div class="mini"><h4>Gas CFC (freon AC/kulkas)</h4><p>Merusak lapisan ozon → <b>lubang ozon</b></p></div>
+      <div class="mini"><h4>Eutrofikasi</h4><p>Air tercemar fosfat/pupuk → ledakan tumbuhan air → O₂ air habis (BOD/COD tinggi)</p></div>
+      <div class="mini"><h4>Biomagnifikasi</h4><p>Penumpukan racun lewat rantai makanan; terbesar di <b>konsumen puncak</b></p></div>
+      <div class="mini"><h4>Sampah plastik</h4><p>Anorganik, sulit terurai → solusi: <b>daur ulang</b></p></div>
+    </div>
+
+    <h3>🦋 Seleksi Alam</h3>
+    <div class="card tint"><p><b>Contoh klasik: ngengat Biston betularia</b> di Inggris saat Revolusi Industri. Pohon menghitam karena jelaga pabrik → ngengat sayap <b>hitam</b> tersamar &amp; selamat dari pemangsa, sedangkan ngengat <b>putih</b> mudah terlihat lalu berkurang. Yang paling <b>sesuai lingkungan</b> yang bertahan — itulah <b>seleksi alam</b>.</p></div>
+    <div class="tips"><b>🧠 Tips</b>Seleksi alam = "yang cocok dengan lingkungannya, lolos hidup &amp; berkembang biak".</div>
   </div>
 </section>
 
@@ -479,6 +938,17 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
     <p class="lead">Semua benda tersusun dari partikel. Yuk kelompokkan!</p>
 
     <div class="lab">
+      <h3>🔬 Tabel Periodik Unsur (Interaktif)</h3>
+      <p class="hint">Daftar semua atom/unsur ada di sini. <b>Klik unsur</b> → lihat info &amp; <b>model atom Bohr</b> (kulit elektron berputar). Klik kategori untuk menyorot.</p>
+      <div class="pt-legend" id="pt-legend"></div>
+      <div class="ptwrap"><div class="ptable" id="ptable"></div></div>
+      <div class="bohr">
+        <div id="pt-info" style="flex:1;min-width:220px"></div>
+        <div id="bohr-atom"></div>
+      </div>
+    </div>
+
+    <div class="lab">
       <h3>🧩 Kelompokkan Zat</h3>
       <p class="hint">Klik contoh di bawah → lihat termasuk kelompok apa.</p>
       <div class="pick" id="mat-pick"></div>
@@ -492,6 +962,52 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       <div class="mini"><h4>Campuran</h4><p>Homogen (larutan: air gula, udara) &amp; heterogen (koloid: susu; suspensi: pasir+air).</p></div>
     </div>
     <div class="note">💡 <b>Senyawa</b>: perbandingan tetap, sifat asal hilang (zat baru), sulit dipisah. <b>Campuran</b>: perbandingan bebas, sifat asal tetap, mudah dipisah.</div>
+
+    <h3>⚡ Detail: Pembentukan Ion, Senyawa &amp; Campuran</h3>
+
+    <div class="lab">
+      <h3>1️⃣ Pembentukan ION</h3>
+      <p class="hint">Atom menjadi <b>ion</b> saat <b>melepas / menerima elektron</b>. Klik "Mainkan" — Na memberi 1 elektron ke Cl.</p>
+      <div class="ionsim" id="ionsim">
+        <div class="atomz na" id="ion-na"><span class="lbl">Na</span></div>
+        <span class="plus">+</span><span class="minus">−</span>
+        <div class="ve"></div>
+        <div class="atomz cl" id="ion-cl"><span class="lbl">Cl</span></div>
+      </div>
+      <div style="text-align:center"><button class="btn" onclick="ionPlay()">▶ Mainkan</button> <button class="btn ghost" onclick="ionReset()">↺ Ulangi</button></div>
+      <p id="ion-status" class="cap" style="min-height:38px"></p>
+      <div class="grid g2">
+        <div class="mini"><h4>➕ Kation (ion positif)</h4><p>Atom <b>melepas</b> elektron. Contoh: Na→Na⁺, Mg→Mg²⁺. Umumnya <b>logam</b>.</p></div>
+        <div class="mini"><h4>➖ Anion (ion negatif)</h4><p>Atom <b>menerima</b> elektron. Contoh: Cl→Cl⁻, O→O²⁻. Umumnya <b>non-logam</b>.</p></div>
+      </div>
+    </div>
+
+    <div class="lab">
+      <h3>2️⃣ Pembentukan SENYAWA</h3>
+      <p class="hint">Dua unsur atau lebih <b>bergabung</b> membentuk zat baru. Ada 2 jenis ikatan:</p>
+      <div class="grid g2">
+        <div class="card"><h4 style="margin-top:0">🔗 Ikatan Ion</h4><p><b>Logam + non-logam</b> → <b>serah-terima elektron</b> (seperti simulasi di atas). Na⁺ &amp; Cl⁻ saling tarik → <b>NaCl</b>.</p></div>
+        <div class="card"><h4 style="margin-top:0">🤝 Ikatan Kovalen</h4><p><b>Non-logam + non-logam</b> → elektron <b>dipakai bersama</b>. Contoh: air <b>H₂O</b>.</p>
+          <svg viewBox="0 0 200 90" width="180" style="display:block;margin:6px auto" role="img" aria-label="Molekul air H2O">
+            <line x1="55" y1="45" x2="145" y2="45" stroke="#cbd5e1" stroke-width="8"/>
+            <circle cx="100" cy="45" r="22" fill="#ff8787"/><text x="100" y="51" font-size="16" font-weight="900" fill="#fff" text-anchor="middle">O</text>
+            <circle cx="40" cy="45" r="15" fill="#a5d8ff"/><text x="40" y="50" font-size="13" font-weight="900" fill="#111" text-anchor="middle">H</text>
+            <circle cx="160" cy="45" r="15" fill="#a5d8ff"/><text x="160" y="50" font-size="13" font-weight="900" fill="#111" text-anchor="middle">H</text>
+            <circle cx="64" cy="41" r="3" fill="#2b6fd6"/><circle cx="64" cy="49" r="3" fill="#2b6fd6"/>
+            <circle cx="136" cy="41" r="3" fill="#2b6fd6"/><circle cx="136" cy="49" r="3" fill="#2b6fd6"/>
+          </svg>
+        </div>
+      </div>
+      <div class="note">Contoh senyawa: <b>H₂O</b> (air), <b>NaCl</b> (garam), <b>CO₂</b>, <b>C₆H₁₂O₆</b> (gula), <b>H₂SO₄</b> (asam sulfat), <b>NaHCO₃</b> (soda kue).</div>
+    </div>
+
+    <div class="lab">
+      <h3>3️⃣ Pembentukan CAMPURAN</h3>
+      <p class="hint">Dua zat <b>bercampur tanpa reaksi</b> — sifat asalnya tetap &amp; bisa dipisah lagi. Klik untuk lihat bedanya:</p>
+      <div class="pick" id="mix-pick"><button class="on" data-k="homogen">Homogen (larutan)</button><button data-k="heterogen">Heterogen (suspensi)</button></div>
+      <div class="mixbox" id="mixbox"></div>
+      <p id="mix-status" class="cap" style="min-height:38px"></p>
+    </div>
   </div>
 
   <!-- Pemisahan -->
@@ -505,6 +1021,24 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       <div class="mini"><div class="ic">💧</div><h4>Destilasi</h4><p>Beda titik didih. Hasil <b>selalu cair</b>. Contoh: air tawar dari air laut.</p></div>
       <div class="mini"><div class="ic">🌀</div><h4>Sentrifugasi</h4><p>Diputar sangat cepat.</p></div>
       <div class="mini"><div class="ic">🎨</div><h4>Kromatografi</h4><p>Beda kecepatan rambat. Contoh: memisahkan warna tinta.</p></div>
+      <div class="mini"><div class="ic">🫗</div><h4>Dekantasi</h4><p>Pengendapan lalu menuang cairan bening perlahan.</p></div>
+      <div class="mini"><div class="ic">🧽</div><h4>Adsorpsi</h4><p>Penyerapan kotoran/warna. Contoh: karbon aktif menjernihkan air.</p></div>
+      <div class="mini"><div class="ic">🌿</div><h4>Ekstraksi</h4><p>Penyarian — mengambil sari dari tumbuhan.</p></div>
+    </div>
+    <div class="viz">
+      <h4>☕ Animasi: Filtrasi (Penyaringan)</h4>
+      <svg viewBox="0 0 200 195" width="180" role="img" aria-label="Proses filtrasi">
+        <path d="M58 28 H142 L110 96 H90 Z" fill="none" stroke="#9aa6b8" stroke-width="3"/>
+        <path d="M64 36 H136 L112 84 H88 Z" fill="#b98a5a" opacity=".85"/>
+        <line x1="88" y1="94" x2="112" y2="94" stroke="#7a8698" stroke-width="3"/>
+        <circle cx="97" cy="88" r="2.6" fill="#5c4326"/><circle cx="103" cy="90" r="2.6" fill="#5c4326"/><circle cx="100" cy="84" r="2.6" fill="#5c4326"/>
+        <circle r="4" fill="#6bb7e6"><animateMotion dur="1.5s" repeatCount="indefinite" path="M100 96 L100 158"/></circle>
+        <path d="M68 150 H132 L126 188 H74 Z" fill="none" stroke="#9aa6b8" stroke-width="3"/>
+        <path d="M76 170 H124 L121 186 H79 Z" fill="#a9d6f0"/>
+        <text x="146" y="56" font-size="10" font-weight="800" fill="#6b4f2a">campuran keruh</text>
+        <text x="150" y="150" font-size="10" font-weight="800" fill="#2b6fd6">filtrat jernih</text>
+      </svg>
+      <p class="cap">Campuran keruh (air + pasir) dituang lewat kertas saring: <b>residu</b> (pasir) tertahan, <b>filtrat</b> (air jernih) menetes ke gelas.</p>
     </div>
     <div class="note">⚠️ Ingat! Tak semua yang pakai titik didih itu destilasi — lihat hasil akhirnya. <b>Destilasi selalu menghasilkan cairan.</b></div>
   </div>
@@ -531,14 +1065,61 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       </div>
     </div>
 
+    <h3>📖 Apa itu Asam &amp; Basa?</h3>
+    <div class="grid g2">
+      <div class="card"><h4 style="margin-top:0;color:#e11d48">🍋 ASAM</h4><p>Zat yang <b>menghasilkan ion H⁺</b> saat dilarutkan dalam air. Rasanya <b>masam</b> dan <b>pH-nya kurang dari 7</b>.</p></div>
+      <div class="card"><h4 style="margin-top:0;color:#4f46e5">🧼 BASA</h4><p>Zat yang <b>menghasilkan ion OH⁻</b> saat dilarutkan dalam air. Rasanya <b>pahit &amp; licin</b> dan <b>pH-nya lebih dari 7</b>. <span style="color:var(--muted)">(pH = 7 berarti netral.)</span></p></div>
+    </div>
+
+    <h3>⚖️ Sifat Asam vs Basa (Lengkap)</h3>
     <div class="tbl-wrap"><table class="t">
-      <tr><th>Sifat Asam</th><th>Sifat Basa</th></tr>
-      <tr><td>Rasanya masam</td><td>Rasanya pahit, licin di kulit</td></tr>
-      <tr><td>Memerahkan lakmus biru</td><td>Membirukan lakmus merah</td></tr>
-      <tr><td>Menghasilkan ion H⁺</td><td>Menghasilkan ion OH⁻</td></tr>
-      <tr><td>pH &lt; 7, korosif, elektrolit</td><td>pH &gt; 7, kaustik (merusak kulit)</td></tr>
+      <tr><th>No</th><th>Sifat Asam</th><th>Sifat Basa</th></tr>
+      <tr><td>1</td><td>Rasanya masam</td><td>Rasanya pahit, terasa licin di kulit</td></tr>
+      <tr><td>2</td><td>Bersifat elektrolit (menghantarkan listrik)</td><td>Tidak bersifat elektrolit</td></tr>
+      <tr><td>3</td><td>Bersifat korosif (merusak logam)</td><td>Bersifat merusak kulit (kaustik)</td></tr>
+      <tr><td>4</td><td>Memerahkan lakmus biru</td><td>Membirukan lakmus merah</td></tr>
+      <tr><td>5</td><td>Menghasilkan ion H⁺ di dalam air</td><td>Menghasilkan ion OH⁻ di dalam air</td></tr>
+      <tr><td>6</td><td>Mempunyai pH &lt; 7</td><td>Mempunyai pH &gt; 7</td></tr>
     </table></div>
-    <div class="note">🎨 Indikator <b>PP (fenolftalin)</b>: asam &amp; netral = tak berwarna, basa = <b>merah muda</b>.</div>
+
+    <h3>🧪 Contoh Asam &amp; Basa Sehari-hari</h3>
+    <div class="grid g2">
+      <div class="mini"><h4>🍋 Contoh Asam</h4><p>Cuka (asam asetat), air jeruk/lemon (asam sitrat), asam lambung (HCl), air aki (asam sulfat), buah masam.</p></div>
+      <div class="mini"><h4>🧼 Contoh Basa</h4><p>Sabun, air kapur, pasta gigi, obat maag (antasida), amonia (pembersih), soda api (NaOH).</p></div>
+    </div>
+
+    <div class="note">🎨 Indikator <b>PP (fenolftalin)</b>: pada suasana <b>asam &amp; netral = tak berwarna</b>, pada suasana <b>basa = merah muda</b>. Dengan <b>lakmus</b>: asam memerahkan lakmus biru, basa membirukan lakmus merah.</div>
+
+    <h3>🌺 Indikator Alami (dari Ekstrak Tanaman)</h3>
+    <p>Selain lakmus &amp; PP, kita bisa membuat penunjuk asam-basa sendiri dari <b>ekstrak (sari) tumbuhan berwarna</b> — diambil dengan cara <b>ekstraksi</b> (tumbuhan ditumbuk lalu disaring dengan air/alkohol). Warnanya berbeda di asam vs basa. Klik untuk mencoba:</p>
+    <div class="lab">
+      <div class="pick" id="ind-pick">
+        <button class="on" data-k="kubis">🥬 Kubis ungu</button>
+        <button data-k="sepatu">🌺 Bunga sepatu</button>
+        <button data-k="kunyit">🟡 Kunyit</button>
+        <button data-k="mawar">🌹 Mawar</button>
+        <button data-k="bayam">🌿 Bayam merah</button>
+        <button data-k="geranium">🌸 Geranium</button>
+      </div>
+      <div style="display:flex;gap:28px;flex-wrap:wrap;justify-content:center;margin-top:6px">
+        <div style="text-align:center"><div class="tube"><div class="liq" id="ind-asam"></div></div><small style="font-weight:800">Dalam ASAM 🍋</small></div>
+        <div style="text-align:center"><div class="tube"><div class="liq" id="ind-basa"></div></div><small style="font-weight:800">Dalam BASA 🧼</small></div>
+      </div>
+      <p id="ind-status" class="cap" style="min-height:22px"></p>
+    </div>
+    <div class="tbl-wrap"><table class="t">
+      <tr><th>Ekstrak Tanaman</th><th>Warna di Asam</th><th>Warna di Basa</th></tr>
+      <tr><td>Kubis ungu</td><td>Merah</td><td>Hijau kekuningan</td></tr>
+      <tr><td>Bunga sepatu</td><td>Merah</td><td>Hijau</td></tr>
+      <tr><td>Kunyit</td><td>Kuning</td><td>Merah kecokelatan</td></tr>
+      <tr><td>Mawar</td><td>Merah muda</td><td>Hijau</td></tr>
+      <tr><td>Bayam merah</td><td>Merah</td><td>Kuning kehijauan</td></tr>
+      <tr><td>Geranium</td><td>Oranye kemerahan</td><td>Kuning</td></tr>
+    </table></div>
+    <div class="note">🔗 <b>Nyambung ke materi lain:</b> <b>ekstraksi</b> (cara memisahkan/mengambil sari tumbuhan di bab Pemisahan Campuran) dipakai untuk membuat <b>indikator asam-basa alami</b> ini.</div>
+
+    <div class="fact"><b>🤓 Fun Fact</b>Skala pH dari 0 (paling asam) sampai 14 (paling basa). Air murni pH 7 (netral), asam lambung pH ±1,5, sabun pH ±9–10.</div>
+    <div class="tips"><b>🧠 Tips Mengingat</b>"As-A-M → me-A-h-kan lakmus biru (mAsam)." "BA-sa → BA-iru-kan lakmus merah &amp; rasanya pahit."</div>
   </div>
 
   <!-- Perubahan -->
@@ -580,6 +1161,17 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       <tr><td>Penyedap</td><td>MSG (monosodium glutamat/vetsin), asam cuka</td></tr>
       <tr><td>Penambah aroma</td><td>Vanili, mentol, etil butirat (aroma buah)</td></tr>
       <tr><td>Pengembang</td><td>Natrium bikarbonat (soda kue)</td></tr>
+      <tr><td>Pengental</td><td>Gelatin, pati, gum, alginat</td></tr>
+      <tr><td>Pengemulsi</td><td>Lesitin (mencampur air &amp; minyak)</td></tr>
+    </table></div>
+
+    <h3>🧴 Bahan Tambahan Non-Makanan</h3>
+    <div class="tbl-wrap"><table class="t">
+      <tr><th>Produk</th><th>Bahan aktif</th><th>Fungsi</th></tr>
+      <tr><td>Pembersih</td><td>Surfaktan (deterjen)</td><td>Mengangkat kotoran</td></tr>
+      <tr><td>Pemutih</td><td>Natrium hipoklorit (kaporit)</td><td>Membunuh kuman &amp; memutihkan</td></tr>
+      <tr><td>Pewangi</td><td>Fragrance (parfum)</td><td>Pengharum</td></tr>
+      <tr><td>Insektisida</td><td>Transflutrin (obat nyamuk)</td><td>Pembasmi serangga</td></tr>
     </table></div>
 
     <h3>🚭 Zat Adiktif &amp; Psikotropika</h3>
@@ -635,6 +1227,21 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       <div class="card"><h4 style="margin-top:0">🌞 Akibat Revolusi (bumi mengelilingi matahari)</h4><ul style="margin:0;padding-left:18px;font-weight:600"><li>Pergantian musim</li><li>Gerak semu tahunan matahari</li><li>Perbedaan lama siang &amp; malam</li><li>Rasi bintang berbeda tiap bulan</li></ul></div>
     </div>
     <div class="note">🌗 Pergantian musim terjadi karena sumbu bumi <b>miring 23,5°</b>. Belahan bumi yang <b>menghadap matahari</b> mengalami musim semi/panas. Tanpa kemiringan ini, tak ada musim!</div>
+    <div class="lab">
+      <h3>🌍 Animasi: Bumi Berevolusi &amp; Musim</h3>
+      <p class="hint">Perhatikan garis sumbu Bumi (putih) — kemiringannya <b>tetap 23,5°</b> ke arah yang sama. Saat mengorbit, belahan yang condong ke Matahari berganti → itulah pergantian musim.</p>
+      <div class="seasons" id="seasons-anim">
+        <div class="ring"></div>
+        <div class="sun2" title="Matahari"></div>
+        <div class="spt n" title="21 Juni — Musim Panas (Utara)">☀️</div>
+        <div class="spt e" title="23 September — Musim Gugur">🍂</div>
+        <div class="spt s" title="22 Desember — Musim Dingin (Utara)">❄️</div>
+        <div class="spt w" title="21 Maret — Musim Semi">🌸</div>
+        <div class="season-orbit"><div class="earth-wrap"><div class="earth"><div class="axis"></div></div></div></div>
+      </div>
+      <div style="text-align:center;margin-top:4px"><button class="btn ghost" onclick="var s=document.getElementById('seasons-anim');s.classList.toggle('paused');this.textContent=s.classList.contains('paused')?'▶️ Putar':'⏸️ Jeda'">⏸️ Jeda</button></div>
+      <p class="hint" style="text-align:center;margin-top:8px">☀️ 21 Jun · Panas &nbsp;·&nbsp; 🍂 23 Sep · Gugur &nbsp;·&nbsp; ❄️ 22 Des · Dingin &nbsp;·&nbsp; 🌸 21 Mar · Semi <span style="opacity:.7">(belahan Utara)</span></p>
+    </div>
     <div class="grid g2">
       <div class="mini tint" style="background:var(--accent-t)"><h4>☀️ Musim Panas</h4><p>Siang lebih panjang dari malam.</p></div>
       <div class="mini tint" style="background:var(--accent-t)"><h4>❄️ Musim Dingin</h4><p>Malam lebih panjang dari siang.</p></div>
@@ -682,6 +1289,26 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
     <div class="grid g2">
       <div class="card"><h4 style="margin-top:0">🌊 Pasang Purnama (Perbani Besar)</h4><p>Matahari, Bumi, Bulan <b>segaris lurus</b> → gravitasi menguat → pasang <b>setinggi-tingginya</b>. Terjadi saat bulan purnama &amp; baru.</p></div>
       <div class="card"><h4 style="margin-top:0">🌓 Pasang Perbani</h4><p>Membentuk <b>sudut 90°</b> → gravitasi saling mengurangi → pasang <b>serendah-rendahnya</b>.</p></div>
+    </div>
+    <div class="lab">
+      <h3>🌊 Animasi: Pasang Surut</h3>
+      <p class="hint">Ikuti gembungan air biru saat Bulan mengelilingi Bumi. <b>Segaris</b> dengan Matahari → gembung besar (<b>pasang purnama</b>). <b>Tegak lurus</b> → gembung kecil (<b>pasang perbani</b>).</p>
+      <div class="tide" id="tide-anim">
+        <div class="axisline"></div>
+        <div class="tsun" title="Matahari"></div>
+        <span class="tlabel" style="left:1%;top:78%">Matahari</span>
+        <div class="tearthwrap">
+          <div class="tide-orbit"><div class="tbulge"></div><div class="tmoon" title="Bulan"></div>
+            <div class="tmark pasang e" title="Air pasang — menghadap Bulan">🌊 Pasang</div>
+            <div class="tmark pasang w" title="Air pasang — sisi jauh">🌊 Pasang</div>
+            <div class="tmark surut n" title="Air surut">🏖️ Surut</div>
+            <div class="tmark surut s" title="Air surut">🏖️ Surut</div>
+          </div>
+          <div class="tearth" title="Bumi"></div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:4px"><button class="btn ghost" onclick="var t=document.getElementById('tide-anim');t.classList.toggle('paused');this.textContent=t.classList.contains('paused')?'▶️ Putar':'⏸️ Jeda'">⏸️ Jeda</button></div>
+      <p class="hint" style="text-align:center;margin-top:8px"><span style="color:#3b82f6">🌊 Pasang</span> = ujung gembungan (menghadap &amp; membelakangi Bulan) · <span style="color:#b06c1c">🏖️ Surut</span> = sisi tegak lurus. Keduanya berputar mengikuti Bulan.</p>
     </div>
     <h3>📅 Kalender</h3>
     <div class="grid g2">
@@ -885,6 +1512,8 @@ function buildOrrery(){
     orbit.style.animationDuration=(6+i*3)+'s';
     const pl=document.createElement('div');pl.className='planet';
     pl.style.width=p.s+'px';pl.style.height=p.s+'px';pl.style.background=p.c;pl.title=p.n;
+    pl.style.animationDuration=(6+i*3)+'s';   // sinkron dgn orbit -> label tegak
+    const lbl=document.createElement('span');lbl.className='plabel';lbl.textContent=p.n;pl.appendChild(lbl);
     pl.onclick=(e)=>{e.stopPropagation();
       document.getElementById('pl-name').innerHTML='🪐 '+p.n;
       document.getElementById('pl-info').innerHTML=p.info;};
@@ -977,6 +1606,130 @@ function eclipse(k){
 document.querySelectorAll('#ec-pick button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('#ec-pick button').forEach(x=>x.classList.toggle('on',x===b));eclipse(b.dataset.k);});
 eclipse('matahari');
+
+/* ============ TABEL PERIODIK INTERAKTIF + MODEL ATOM BOHR ============ */
+const CATS={al:['Logam alkali (Gol. IA)','c-al'],ae:['Logam alkali tanah (Gol. IIA)','c-ae'],
+  tm:['Logam transisi','c-tm'],pm:['Logam pasca-transisi','c-pm'],ml:['Metaloid (semi-logam)','c-ml'],
+  nm:['Non-logam','c-nm'],hl:['Halogen (Gol. VIIA)','c-hl'],ng:['Gas mulia (Gol. VIIIA)','c-ng'],
+  ln:['Lantanida','c-ln'],an:['Aktinida','c-an']};
+const PT=[
+[1,'H','Hidrogen','nm',1,1],[2,'He','Helium','ng',18,1],
+[3,'Li','Litium','al',1,2],[4,'Be','Berilium','ae',2,2],[5,'B','Boron','ml',13,2],[6,'C','Karbon','nm',14,2],[7,'N','Nitrogen','nm',15,2],[8,'O','Oksigen','nm',16,2],[9,'F','Fluor','hl',17,2],[10,'Ne','Neon','ng',18,2],
+[11,'Na','Natrium','al',1,3],[12,'Mg','Magnesium','ae',2,3],[13,'Al','Aluminium','pm',13,3],[14,'Si','Silikon','ml',14,3],[15,'P','Fosforus','nm',15,3],[16,'S','Belerang','nm',16,3],[17,'Cl','Klor','hl',17,3],[18,'Ar','Argon','ng',18,3],
+[19,'K','Kalium','al',1,4],[20,'Ca','Kalsium','ae',2,4],[21,'Sc','Skandium','tm',3,4],[22,'Ti','Titanium','tm',4,4],[23,'V','Vanadium','tm',5,4],[24,'Cr','Kromium','tm',6,4],[25,'Mn','Mangan','tm',7,4],[26,'Fe','Besi','tm',8,4],[27,'Co','Kobalt','tm',9,4],[28,'Ni','Nikel','tm',10,4],[29,'Cu','Tembaga','tm',11,4],[30,'Zn','Seng','tm',12,4],[31,'Ga','Galium','pm',13,4],[32,'Ge','Germanium','ml',14,4],[33,'As','Arsen','ml',15,4],[34,'Se','Selenium','nm',16,4],[35,'Br','Bromin','hl',17,4],[36,'Kr','Kripton','ng',18,4],
+[37,'Rb','Rubidium','al',1,5],[38,'Sr','Stronsium','ae',2,5],[39,'Y','Itrium','tm',3,5],[40,'Zr','Zirkonium','tm',4,5],[41,'Nb','Niobium','tm',5,5],[42,'Mo','Molibdenum','tm',6,5],[43,'Tc','Teknesium','tm',7,5],[44,'Ru','Rutenium','tm',8,5],[45,'Rh','Rodium','tm',9,5],[46,'Pd','Paladium','tm',10,5],[47,'Ag','Perak','tm',11,5],[48,'Cd','Kadmium','tm',12,5],[49,'In','Indium','pm',13,5],[50,'Sn','Timah','pm',14,5],[51,'Sb','Antimon','ml',15,5],[52,'Te','Telurium','ml',16,5],[53,'I','Iodin','hl',17,5],[54,'Xe','Xenon','ng',18,5],
+[55,'Cs','Sesium','al',1,6],[56,'Ba','Barium','ae',2,6],
+[57,'La','Lantanum','ln',3,6],[58,'Ce','Serium','ln',4,6],[59,'Pr','Praseodimium','ln',5,6],[60,'Nd','Neodimium','ln',6,6],[61,'Pm','Prometium','ln',7,6],[62,'Sm','Samarium','ln',8,6],[63,'Eu','Europium','ln',9,6],[64,'Gd','Gadolinium','ln',10,6],[65,'Tb','Terbium','ln',11,6],[66,'Dy','Disprosium','ln',12,6],[67,'Ho','Holmium','ln',13,6],[68,'Er','Erbium','ln',14,6],[69,'Tm','Tulium','ln',15,6],[70,'Yb','Iterbium','ln',16,6],[71,'Lu','Lutesium','ln',17,6],
+[72,'Hf','Hafnium','tm',4,6],[73,'Ta','Tantalum','tm',5,6],[74,'W','Wolfram','tm',6,6],[75,'Re','Renium','tm',7,6],[76,'Os','Osmium','tm',8,6],[77,'Ir','Iridium','tm',9,6],[78,'Pt','Platina','tm',10,6],[79,'Au','Emas','tm',11,6],[80,'Hg','Raksa','tm',12,6],[81,'Tl','Talium','pm',13,6],[82,'Pb','Timbal','pm',14,6],[83,'Bi','Bismut','pm',15,6],[84,'Po','Polonium','pm',16,6],[85,'At','Astatin','hl',17,6],[86,'Rn','Radon','ng',18,6],
+[87,'Fr','Fransium','al',1,7],[88,'Ra','Radium','ae',2,7],
+[89,'Ac','Aktinium','an',3,7],[90,'Th','Torium','an',4,7],[91,'Pa','Protaktinium','an',5,7],[92,'U','Uranium','an',6,7],[93,'Np','Neptunium','an',7,7],[94,'Pu','Plutonium','an',8,7],[95,'Am','Amerisium','an',9,7],[96,'Cm','Kurium','an',10,7],[97,'Bk','Berkelium','an',11,7],[98,'Cf','Kalifornium','an',12,7],[99,'Es','Einsteinium','an',13,7],[100,'Fm','Fermium','an',14,7],[101,'Md','Mendelevium','an',15,7],[102,'No','Nobelium','an',16,7],[103,'Lr','Lawrensium','an',17,7],
+[104,'Rf','Ruterfordium','tm',4,7],[105,'Db','Dubnium','tm',5,7],[106,'Sg','Seaborgium','tm',6,7],[107,'Bh','Bohrium','tm',7,7],[108,'Hs','Hasium','tm',8,7],[109,'Mt','Meitnerium','tm',9,7],[110,'Ds','Darmstadtium','tm',10,7],[111,'Rg','Roentgenium','tm',11,7],[112,'Cn','Kopernisium','tm',12,7],[113,'Nh','Nihonium','pm',13,7],[114,'Fl','Flerovium','pm',14,7],[115,'Mc','Moskovium','pm',15,7],[116,'Lv','Livermorium','pm',16,7],[117,'Ts','Tenesin','hl',17,7],[118,'Og','Oganeson','ng',18,7]
+];
+function shells(z){const cap=[2,8,8,18,18,32,32];const o=[];let r=z;for(const c of cap){if(r<=0)break;o.push(Math.min(r,c));r-=c;}return o;}
+function golongan(x,cat){if(cat==='ln'||cat==='an')return '—';const m={1:'IA',2:'IIA',13:'IIIA',14:'IVA',15:'VA',16:'VIA',17:'VIIA',18:'VIIIA'};return m[x]||'B (transisi)';}
+function drawAtom(z){
+  const c=document.getElementById('bohr-atom');if(!c)return;
+  const sh=shells(z),base=18,step=14;let html='<div class="atom"><div class="nucleus">'+z+'</div>';
+  sh.forEach((n,i)=>{const r=base+i*step,size=r*2;let els='';
+    for(let k=0;k<n;k++){const a=k*360/n;els+='<div class="electron" style="transform:translate(-50%,-50%) rotate('+a+'deg) translateX('+r+'px)"></div>';}
+    html+='<div class="shell" style="width:'+size+'px;height:'+size+'px;animation-duration:'+(4+i*1.5)+'s">'+els+'</div>';});
+  c.innerHTML=html+'</div>';
+}
+function selectEl(e,d){
+  const [z,sym,name,cat,x,y]=e;
+  document.querySelectorAll('#ptable .el').forEach(el=>el.classList.remove('sel'));
+  if(d)d.classList.add('sel');
+  const sh=shells(z),kulit=['K','L','M','N','O','P','Q'],per=cat==='ln'?6:cat==='an'?7:y;
+  document.getElementById('pt-info').innerHTML=
+    '<div style="font-size:14.5px;line-height:1.7"><span style="font-size:30px;font-weight:900;color:var(--accent-d)">'+sym+'</span> <b>'+name+'</b><br>'+
+    'Nomor atom: <b>'+z+'</b> · Golongan: <b>'+golongan(x,cat)+'</b> · Periode: <b>'+per+'</b><br>'+
+    'Kategori: <b>'+CATS[cat][0]+'</b><br>'+
+    'Konfigurasi elektron: <b>'+sh.join(', ')+'</b> <span style="color:var(--muted)">('+sh.map((n,i)=>kulit[i]).join(', ')+')</span></div>';
+  drawAtom(z);
+}
+let ptFilter=null;
+function ptReset(){ptFilter=null;
+  document.querySelectorAll('#ptable .el').forEach(x=>x.classList.remove('dim'));
+  document.querySelectorAll('#pt-legend .lg').forEach(x=>x.classList.remove('off'));}
+function filterPT(c,btn){
+  if(ptFilter===c){ptReset();return;}          // klik kategori yg sama -> reset
+  ptFilter=c;
+  document.querySelectorAll('#pt-legend .lg').forEach(x=>x.classList.toggle('off',x!==btn));
+  document.querySelectorAll('#ptable .el').forEach(x=>x.classList.toggle('dim',x.dataset.cat!==c));
+}
+function renderPT(){
+  const g=document.getElementById('ptable');if(!g)return;g.innerHTML='';
+  PT.forEach(e=>{const [z,sym,name,cat,x,y]=e;const row=cat==='ln'?9:cat==='an'?10:y;
+    const d=document.createElement('div');d.className='el '+CATS[cat][1];
+    d.style.gridColumn=x;d.style.gridRow=row;d.style.animationDelay=(z*4)+'ms';
+    d.dataset.cat=cat;d.dataset.z=z;
+    d.innerHTML='<span class="no">'+z+'</span><span class="sym">'+sym+'</span>';
+    d.onclick=()=>selectEl(e,d);g.appendChild(d);});
+  const sp=document.createElement('div');sp.className='pt-spacer';g.appendChild(sp);
+  [[6,'57–71'],[7,'89–103']].forEach(p=>{const ph=document.createElement('div');ph.className='pt-ph';ph.style.gridColumn=3;ph.style.gridRow=p[0];ph.textContent=p[1];g.appendChild(ph);});
+  const lg=document.getElementById('pt-legend');lg.innerHTML='';
+  Object.keys(CATS).forEach(c=>{const b=document.createElement('span');b.className='lg';b.dataset.cat=c;
+    b.innerHTML='<span class="sw '+CATS[c][1]+'"></span>'+CATS[c][0];b.onclick=()=>filterPT(c,b);lg.appendChild(b);});
+  const all=document.createElement('span');all.className='lg';all.innerHTML='🔄 Semua';
+  all.onclick=ptReset;lg.appendChild(all);
+  selectEl(PT[10],g.querySelector('.el[data-z="11"]'));
+}
+renderPT();
+
+/* ---- simulasi pembentukan ion & campuran ---- */
+function ionPlay(){
+  const s=document.getElementById('ionsim');if(!s)return;s.classList.add('done');
+  setTimeout(()=>{
+    const na=document.querySelector('#ion-na .lbl'),cl=document.querySelector('#ion-cl .lbl');
+    if(na)na.innerHTML='Na⁺'; if(cl)cl.innerHTML='Cl⁻';
+    const st=document.getElementById('ion-status');
+    if(st)st.innerHTML='✅ Na <b>melepas</b> 1 elektron → <b>Na⁺ (kation)</b>. Cl <b>menerima</b> elektron → <b>Cl⁻ (anion)</b>. Muatan berlawanan tarik-menarik → membentuk <b>NaCl</b>.';
+  },1250);
+}
+function ionReset(){
+  const s=document.getElementById('ionsim');if(!s)return;s.classList.remove('done');
+  const na=document.querySelector('#ion-na .lbl'),cl=document.querySelector('#ion-cl .lbl');
+  if(na)na.textContent='Na'; if(cl)cl.textContent='Cl';
+  const st=document.getElementById('ion-status');if(st)st.textContent='';
+}
+function mixShow(type){
+  const box=document.getElementById('mixbox');if(!box)return;
+  box.querySelectorAll('.pcl').forEach(p=>{
+    if(type==='homogen'){p.style.left=(6+Math.random()*86)+'%';p.style.top=(6+Math.random()*86)+'%';p.style.background='#e0a020';}
+    else{p.style.left=(18+Math.random()*64)+'%';p.style.top=(64+Math.random()*30)+'%';p.style.background='#8a5a2b';}
+  });
+  const st=document.getElementById('mix-status');
+  if(st)st.innerHTML= type==='homogen'
+    ? '<b>Homogen (larutan):</b> partikel tersebar merata &amp; tak bisa dibedakan. Contoh: air gula, air garam, udara.'
+    : '<b>Heterogen (suspensi):</b> partikel mengumpul/mengendap, masih bisa dibedakan. Contoh: air + pasir, air + kopi.';
+}
+function initMix(){
+  const box=document.getElementById('mixbox');if(!box)return;box.innerHTML='';
+  for(let i=0;i<26;i++){const p=document.createElement('div');p.className='pcl';p.style.left='50%';p.style.top='50%';box.appendChild(p);}
+  document.querySelectorAll('#mix-pick button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#mix-pick button').forEach(x=>x.classList.toggle('on',x===b));mixShow(b.dataset.k);});
+  setTimeout(()=>mixShow('homogen'),60);
+}
+initMix();
+
+/* ---- indikator alami dari ekstrak tanaman ---- */
+const IND={
+  kubis:['#d81b60','#7cb342','Kubis ungu: merah (asam) → hijau kekuningan (basa).'],
+  sepatu:['#e0245e','#3fae5a','Bunga sepatu: merah (asam) → hijau (basa).'],
+  kunyit:['#f5c211','#c0562a','Kunyit: kuning (asam/netral) → merah kecokelatan (basa).'],
+  mawar:['#e83e8c','#5aa02c','Mawar: merah muda (asam) → hijau (basa).'],
+  bayam:['#c92a54','#b3a52a','Bayam merah: merah (asam) → kuning kehijauan (basa).'],
+  geranium:['#e8590c','#f5c211','Geranium: oranye kemerahan (asam) → kuning (basa).']
+};
+function indShow(k){const d=IND[k];const a=document.getElementById('ind-asam'),b=document.getElementById('ind-basa');
+  if(a){a.style.background=d[0];a.style.height='30%';setTimeout(()=>a.style.height='66%',30);}
+  if(b){b.style.background=d[1];b.style.height='30%';setTimeout(()=>b.style.height='66%',30);}
+  const st=document.getElementById('ind-status');if(st)st.textContent=d[2];}
+function initInd(){const w=document.getElementById('ind-pick');if(!w)return;
+  w.querySelectorAll('button').forEach(bn=>bn.onclick=()=>{
+    w.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===bn));indShow(bn.dataset.k);});
+  indShow('kubis');}
+initInd();
 </script>
 </body>
 </html>
