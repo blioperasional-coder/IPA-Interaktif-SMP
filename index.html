@@ -158,16 +158,16 @@ body[data-subject="spc"] .pick button,body[data-subject="spc"] .tube,body[data-s
 /* planet dilawan-putar dgn durasi sama -> label nama TETAP TEGAK saat mengorbit */
 @keyframes counterspin{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(-360deg)}}
 .plabel{position:absolute;top:calc(100% + 3px);left:50%;transform:translateX(-50%);font-size:10px;
-  font-weight:800;white-space:nowrap;color:#eef1ff;text-shadow:0 1px 3px #000,0 0 4px #000;pointer-events:none}
-/* tooltip ciri planet (muncul saat planet diklik; planet dilawan-putar jadi tegak) */
-.orbit .planet .ptip{position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%);
-  width:158px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:9px 11px;
-  font-size:11.5px;font-weight:700;color:var(--ink);line-height:1.45;text-align:left;box-shadow:var(--shadow);
-  z-index:30;display:none;pointer-events:none}
-.orbit .planet.tip .ptip{display:block;animation:fade .2s}
-.orbit .planet .ptip b{display:block;color:var(--accent-d);font-size:13px;margin-bottom:2px}
-.orbit .planet .ptip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);
-  border:6px solid transparent;border-top-color:var(--card)}
+  font-weight:800;white-space:nowrap;color:#eef1ff;text-shadow:0 1px 3px #000,0 0 4px #000;
+  pointer-events:auto;cursor:pointer;padding:2px 4px}
+/* tooltip ciri planet: 1 overlay diposisikan di atas planet yg diklik (orbit berhenti) */
+#orr-tip{position:absolute;z-index:50;width:160px;background:var(--card);border:1px solid var(--line);
+  border-radius:11px;padding:9px 11px;font-size:11.5px;font-weight:700;color:var(--ink);line-height:1.45;
+  text-align:left;box-shadow:var(--shadow);display:none;pointer-events:none;transform:translate(-50%,-100%)}
+#orr-tip.on{display:block;animation:fade .2s}
+#orr-tip b{display:block;color:var(--accent-d);font-size:13px;margin-bottom:2px}
+#orr-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:7px solid transparent;border-top-color:var(--card)}
 .sun{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:46px;height:46px;
   border-radius:50%;background:radial-gradient(circle,#fff59d,#f59e0b 60%,#ea580c);
   box-shadow:0 0 30px #f59e0b,0 0 60px rgba(245,158,11,.5)}
@@ -1523,22 +1523,31 @@ function buildOrrery(){
     pl.style.width=p.s+'px';pl.style.height=p.s+'px';pl.style.background=p.c;pl.title=p.n;
     pl.style.animationDuration=(6+i*3)+'s';   // sinkron dgn orbit -> label tegak
     const lbl=document.createElement('span');lbl.className='plabel';lbl.textContent=p.n;pl.appendChild(lbl);
-    const tip=document.createElement('div');tip.className='ptip';tip.innerHTML='<b>'+p.n+'</b>'+p.info;pl.appendChild(tip);
     pl.onclick=(e)=>{e.stopPropagation();
-      const open=pl.classList.contains('tip');
-      document.querySelectorAll('#orrery .planet.tip').forEach(x=>x.classList.remove('tip'));
-      if(open){orrResume();return;}          // klik planet yg sama -> tutup & lanjut
-      pl.classList.add('tip'); orrPause();    // berhenti supaya tooltip mudah dibaca
+      if(pl.dataset.open==='1'){orrResume();return;}   // klik planet yg sama -> tutup
+      document.querySelectorAll('#orrery .planet').forEach(x=>x.dataset.open='0');
+      pl.dataset.open='1'; orrPause();                  // berhenti dulu supaya tooltip diam
+      const tip=document.getElementById('orr-tip');
+      const orRect=o.getBoundingClientRect(),pRect=pl.getBoundingClientRect();
+      tip.innerHTML='<b>'+p.n+'</b>'+p.info;
+      tip.style.left=(pRect.left-orRect.left+pRect.width/2)+'px';
+      tip.style.top=(pRect.top-orRect.top-6)+'px';
+      tip.classList.add('on');
       document.getElementById('pl-name').innerHTML='🪐 '+p.n;
       document.getElementById('pl-info').innerHTML=p.info;};
     orbit.appendChild(pl);o.appendChild(orbit);
   });
-  o.onclick=orrResume;                        // klik area kosong -> tutup tooltip
+  const tip=document.createElement('div');tip.id='orr-tip';o.appendChild(tip);
+  o.onclick=orrResume;                                  // klik area kosong -> tutup
 }
 buildOrrery();
 let orrPaused=false;
 function orrPause(){orrPaused=true;document.querySelectorAll('#orrery .orbit').forEach(o=>o.classList.add('paused'));const b=document.getElementById('orr-toggle');if(b)b.textContent='▶️ Putar';}
-function orrResume(){orrPaused=false;document.querySelectorAll('#orrery .planet.tip').forEach(x=>x.classList.remove('tip'));document.querySelectorAll('#orrery .orbit').forEach(o=>o.classList.remove('paused'));const b=document.getElementById('orr-toggle');if(b)b.textContent='⏸️ Jeda';}
+function orrResume(){orrPaused=false;
+  document.querySelectorAll('#orrery .planet').forEach(x=>x.dataset.open='0');
+  const t=document.getElementById('orr-tip');if(t)t.classList.remove('on');
+  document.querySelectorAll('#orrery .orbit').forEach(o=>o.classList.remove('paused'));
+  const b=document.getElementById('orr-toggle');if(b)b.textContent='⏸️ Jeda';}
 document.getElementById('orr-toggle').onclick=function(){orrPaused?orrResume():orrPause();};
 
 /* ---------- TATA SURYA: Starfield ---------- */
