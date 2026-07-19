@@ -202,26 +202,35 @@ body[data-subject="spc"] .pick button,body[data-subject="spc"] .tube,body[data-s
    saat Bulan SEGARIS dgn Matahari (purnama) & mengecil saat TEGAK LURUS (perbani) */
 .tide{position:relative;width:100%;max-width:420px;aspect-ratio:1.5/1;margin:6px auto}
 .tide .axisline{position:absolute;left:0;right:12%;top:50%;height:0;border-top:2px dashed rgba(170,170,210,.35)}
-.tide .tsun{position:absolute;left:1%;top:50%;transform:translate(0,-50%);width:50px;height:50px;border-radius:50%;background:radial-gradient(circle,#fff59d,#f59e0b 60%,#ea580c);box-shadow:0 0 26px #f59e0b}
+.tide .tsun{position:absolute;left:1%;top:50%;transform:translate(0,-50%);width:50px;height:50px;border-radius:50%;background:radial-gradient(circle,#fff59d,#f59e0b 60%,#ea580c);box-shadow:0 0 26px #f59e0b;cursor:pointer;z-index:5}
 .tearthwrap{position:absolute;left:64%;top:50%;transform:translate(-50%,-50%);width:118px;height:118px}
 .tearth{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 34% 30%,#8fd0ff,#2b6fd6 72%);box-shadow:0 0 8px rgba(0,0,0,.4);z-index:2}
-.tide-orbit{position:absolute;inset:0;animation:torbit 14s linear infinite}
+.tide-orbit{position:absolute;inset:0;animation:torbit 14s linear infinite;pointer-events:none}
 @keyframes torbit{to{transform:rotate(360deg)}}
-.tbulge{position:absolute;left:50%;top:50%;width:135%;height:64%;border-radius:50%;
+.tbulge{position:absolute;left:50%;top:50%;width:135%;height:64%;border-radius:50%;pointer-events:none;
   background:radial-gradient(ellipse,rgba(90,165,255,.6),rgba(90,165,255,0) 70%);
   animation:tidepulse 14s ease-in-out infinite;transform-origin:center}
 @keyframes tidepulse{0%,50%,100%{transform:translate(-50%,-50%) scaleX(1.4)}25%,75%{transform:translate(-50%,-50%) scaleX(.85)}}
-.tmoon{position:absolute;left:100%;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:#d6dae6;box-shadow:0 0 8px rgba(255,255,255,.6);z-index:3}
+.tmoon{position:absolute;left:100%;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:#d6dae6;box-shadow:0 0 8px rgba(255,255,255,.6);z-index:3;cursor:pointer;pointer-events:auto}
 .tide.paused .tide-orbit,.tide.paused .tbulge,.tide.paused .tmark{animation-play-state:paused}
 .tlabel{position:absolute;font-size:11px;font-weight:800;color:#eef1ff;text-shadow:0 1px 3px #000}
 /* penanda pasang (ujung gembungan) & surut (sisi tegak lurus), ikut berputar
    dgn Bulan tapi teksnya di-lawan-putar supaya tetap tegak & terbaca */
 .tmark{position:absolute;font-size:9px;font-weight:800;white-space:nowrap;padding:1px 5px;border-radius:7px;
-  color:#fff;z-index:4;transform:translate(-50%,-50%);animation:tidemark 14s linear infinite}
+  color:#fff;z-index:4;transform:translate(-50%,-50%);animation:tidemark 14s linear infinite;cursor:pointer;pointer-events:auto}
 @keyframes tidemark{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(-360deg)}}
 .tmark.pasang{background:rgba(37,99,235,.92)}
 .tmark.surut{background:rgba(176,108,28,.94)}
 .tmark.e{left:110%;top:50%}.tmark.w{left:-10%;top:50%}.tmark.n{left:50%;top:-8%}.tmark.s{left:50%;top:108%}
+/* tooltip penjelasan pasang surut (klik Matahari/Bulan/penanda) */
+#tide-tip{position:absolute;z-index:60;width:172px;background:var(--card);border:1px solid var(--line);
+  border-radius:11px;padding:9px 11px;font-size:11.5px;font-weight:700;color:var(--ink);line-height:1.45;
+  text-align:left;box-shadow:var(--shadow);display:none;pointer-events:none;transform:translate(-50%,-100%)}
+#tide-tip.below{transform:translate(-50%,0)}
+#tide-tip.on{display:block;animation:fade .2s}
+#tide-tip b{display:block;color:var(--accent-d);font-size:12.5px;margin-bottom:2px}
+#tide-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--card)}
+#tide-tip.below::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:var(--card)}
 
 /* ---- visual belajar tambahan (Biologi & Kimia) ---- */
 .viz{background:linear-gradient(180deg,var(--accent-t),var(--card));border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
@@ -1338,19 +1347,21 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
     <div class="lab">
       <h3>🌊 Animasi: Pasang Surut</h3>
       <p class="hint">Ikuti gembungan air biru saat Bulan mengelilingi Bumi. <b>Segaris</b> dengan Matahari → gembung besar (<b>pasang purnama</b>). <b>Tegak lurus</b> → gembung kecil (<b>pasang perbani</b>).</p>
+      <p class="hint" style="text-align:center;margin:0 0 4px"><b>Klik</b> Matahari ☀️, Bulan 🌙, atau penanda 🌊/🏖️ untuk penjelasan.</p>
       <div class="tide" id="tide-anim">
         <div class="axisline"></div>
-        <div class="tsun" title="Matahari"></div>
+        <div class="tsun" title="Klik untuk penjelasan" onclick="tideTip('sun',this,event)"></div>
         <span class="tlabel" style="left:1%;top:78%">Matahari</span>
         <div class="tearthwrap">
-          <div class="tide-orbit"><div class="tbulge"></div><div class="tmoon" title="Bulan"></div>
-            <div class="tmark pasang e" title="Air pasang — menghadap Bulan">🌊 Pasang</div>
-            <div class="tmark pasang w" title="Air pasang — sisi jauh">🌊 Pasang</div>
-            <div class="tmark surut n" title="Air surut">🏖️ Surut</div>
-            <div class="tmark surut s" title="Air surut">🏖️ Surut</div>
+          <div class="tide-orbit"><div class="tbulge"></div><div class="tmoon" title="Klik untuk penjelasan" onclick="tideTip('moon',this,event)"></div>
+            <div class="tmark pasang e" onclick="tideTip('pasang',this,event)" title="Klik">🌊 Pasang</div>
+            <div class="tmark pasang w" onclick="tideTip('pasang',this,event)" title="Klik">🌊 Pasang</div>
+            <div class="tmark surut n" onclick="tideTip('surut',this,event)" title="Klik">🏖️ Surut</div>
+            <div class="tmark surut s" onclick="tideTip('surut',this,event)" title="Klik">🏖️ Surut</div>
           </div>
           <div class="tearth" title="Bumi"></div>
         </div>
+        <div id="tide-tip"></div>
       </div>
       <div style="text-align:center;margin-top:4px"><button class="btn ghost" onclick="var t=document.getElementById('tide-anim');t.classList.toggle('paused');this.textContent=t.classList.contains('paused')?'▶️ Putar':'⏸️ Jeda'">⏸️ Jeda</button></div>
       <p class="hint" style="text-align:center;margin-top:8px"><span style="color:#3b82f6">🌊 Pasang</span> = ujung gembungan (menghadap &amp; membelakangi Bulan) · <span style="color:#b06c1c">🏖️ Surut</span> = sisi tegak lurus. Keduanya berputar mengikuti Bulan.</p>
@@ -1880,6 +1891,34 @@ function seasonResume(){
   const t=document.getElementById('season-tip');if(t)t.classList.remove('on');
 }
 (function(){const b=document.getElementById('seasons-anim');if(b)b.onclick=seasonResume;})();
+
+/* ---- tooltip penjelasan pasang surut ---- */
+const TIDES={
+  sun:['☀️ Matahari','Gravitasi Matahari juga menarik air laut. Saat SEGARIS dengan Bulan → pasang PURNAMA (tinggi). Saat TEGAK LURUS → pasang PERBANI (rendah).'],
+  moon:['🌙 Bulan','Gravitasi Bulan adalah penyebab UTAMA pasang surut — menarik air laut ke arahnya.'],
+  pasang:['🌊 Pasang (air naik)','Sisi Bumi yang MENGHADAP Bulan (dan sisi berlawanannya) tertarik gravitasi → air menggembung → PASANG.'],
+  surut:['🏖️ Surut (air turun)','Sisi yang TEGAK LURUS dari Bulan kehilangan air (tertarik ke sisi pasang) → air SURUT.']
+};
+function tideTip(key,el,ev){
+  if(ev)ev.stopPropagation();
+  const box=document.getElementById('tide-anim'),tip=document.getElementById('tide-tip');if(!box||!tip)return;
+  if(el.dataset.open==='1'){tideResume();return;}
+  box.querySelectorAll('.tsun,.tmoon,.tmark').forEach(x=>x.dataset.open='0'); el.dataset.open='1';
+  box.classList.add('paused');   // bekukan supaya tooltip diam & terbaca
+  const d=TIDES[key],br=box.getBoundingClientRect(),mr=el.getBoundingClientRect();
+  tip.innerHTML='<b>'+d[0]+'</b>'+d[1];
+  tip.style.left=(mr.left-br.left+mr.width/2)+'px';
+  if((mr.top-br.top)<44){tip.style.top=(mr.top-br.top+mr.height+4)+'px';tip.classList.add('below');}
+  else{tip.style.top=(mr.top-br.top-4)+'px';tip.classList.remove('below');}
+  tip.classList.add('on');
+}
+function tideResume(){
+  const box=document.getElementById('tide-anim');if(!box)return;
+  box.querySelectorAll('.tsun,.tmoon,.tmark').forEach(x=>x.dataset.open='0');
+  const t=document.getElementById('tide-tip');if(t)t.classList.remove('on');
+  box.classList.remove('paused');
+}
+(function(){const b=document.getElementById('tide-anim');if(b)b.onclick=tideResume;})();
 </script>
 </body>
 </html>
