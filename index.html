@@ -237,6 +237,14 @@ body[data-subject="spc"] .pick button,body[data-subject="spc"] .tube,body[data-s
 .viz h4{margin:0 0 6px;color:var(--accent-d);display:flex;gap:8px;align-items:center}
 .viz svg{display:block;margin:auto;max-width:100%;height:auto}
 .viz .cap{font-size:12.5px;color:var(--muted);font-weight:700;margin-top:8px;text-align:center}
+/* diagram interaktif: klik bagian -> panel info */
+.dpart{cursor:pointer;transition:.15s}
+.dpart:hover{filter:brightness(1.15)}
+svg .dpart.dsel{filter:drop-shadow(0 0 3px #000) brightness(1.12)}
+.dpanel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:10px;font-weight:600;font-size:14px;min-height:24px}
+.dpanel b{color:var(--accent-d)}
+.mini.psel{outline:3px solid var(--accent);outline-offset:-2px}
+.mini[onclick]{cursor:pointer}
 .chain{display:flex;align-items:center;justify-content:center;gap:2px;flex-wrap:wrap}
 .chain .org{font-size:32px;text-align:center;min-width:56px;line-height:1.1}
 .chain .org small{display:block;font-size:11px;font-weight:800;color:var(--muted)}
@@ -511,6 +519,24 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
     <div class="note">💡 <b>Kapiler</b> menghubungkan arteri &amp; vena, dindingnya tipis untuk tempat pertukaran O₂ dan CO₂. Tekanan <b>sistol</b> (bilik memompa) = 120, <b>diastol</b> (jantung relaksasi) = 80.</div>
 
     <h3>🫀 Struktur Jantung &amp; Jalur Peredaran</h3>
+    <div class="viz">
+      <h4>🖱️ Jantung Interaktif — klik tiap ruang</h4>
+      <svg viewBox="0 0 260 210" width="290" style="max-width:100%" role="img" aria-label="4 ruang jantung">
+        <rect class="dpart" onclick="diagPart('heart-info','Serambi Kanan (Atrium Kanan)','menerima darah kaya CO₂ dari seluruh tubuh (lewat vena cava).',this)" x="26" y="24" width="94" height="66" rx="14" fill="#6aa9dd"/>
+        <rect class="dpart" onclick="diagPart('heart-info','Serambi Kiri (Atrium Kiri)','menerima darah kaya O₂ dari paru-paru (lewat vena pulmonalis).',this)" x="140" y="24" width="94" height="66" rx="14" fill="#e07a7a"/>
+        <rect class="dpart" onclick="diagPart('heart-info','Bilik Kanan (Ventrikel Kanan)','memompa darah kaya CO₂ ke paru-paru (lewat arteri pulmonalis).',this)" x="26" y="100" width="94" height="86" rx="14" fill="#4a8fce"/>
+        <rect class="dpart" onclick="diagPart('heart-info','Bilik Kiri (Ventrikel Kiri)','memompa darah kaya O₂ ke seluruh tubuh (lewat aorta). Dindingnya PALING TEBAL.',this)" x="140" y="100" width="94" height="86" rx="14" fill="#d15a5a"/>
+        <g font-size="10.5" font-weight="800" fill="#fff" text-anchor="middle">
+          <text x="73" y="52">Serambi</text><text x="73" y="65">Kanan</text>
+          <text x="187" y="52">Serambi</text><text x="187" y="65">Kiri</text>
+          <text x="73" y="140">Bilik</text><text x="73" y="153">Kanan</text>
+          <text x="187" y="140">Bilik</text><text x="187" y="153">Kiri</text>
+        </g>
+        <text x="73" y="98" font-size="8" fill="#0b3a66" text-anchor="middle">katup trikuspidalis</text>
+        <text x="187" y="98" font-size="8" fill="#7a1e1e" text-anchor="middle">katup bikuspidalis</text>
+      </svg>
+      <div class="dpanel" id="heart-info">👆 Klik salah satu ruang jantung. <span style="color:#3b82f6">Biru = darah kaya CO₂</span>, <span style="color:#e07a7a">merah = kaya O₂</span>.</div>
+    </div>
     <div class="grid g2">
       <div class="mini"><h4>4 Ruang Jantung</h4><p><b>Serambi (atrium)</b> kanan &amp; kiri di atas; <b>Bilik (ventrikel)</b> kanan &amp; kiri di bawah. Katup <b>trikuspidalis</b> (kanan) &amp; <b>bikuspidalis</b> (kiri) menjaga darah tak balik.</p></div>
       <div class="mini"><h4>Pembuluh Besar</h4><p><b>Aorta</b> (bilik kiri→tubuh), <b>arteri/vena pulmonalis</b> (ke/dari paru), <b>vena cava</b> (dari tubuh→serambi kanan).</p></div>
@@ -807,16 +833,16 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
         <circle cx="192" cy="278" r="11" fill="#5b6b82"/>
         <!-- nomor label -->
         <g font-size="12" font-weight="800" font-family="sans-serif" text-anchor="middle">
-          <g><circle cx="163" cy="40" r="10" fill="#16a34a"/><text x="163" y="44" fill="#fff">1</text></g>
-          <g><circle cx="163" cy="86" r="10" fill="#16a34a"/><text x="163" y="90" fill="#fff">2</text></g>
-          <g><circle cx="88"  cy="122" r="10" fill="#16a34a"/><text x="88" y="126" fill="#fff">3</text></g>
-          <g><circle cx="163" cy="150" r="10" fill="#16a34a"/><text x="163" y="154" fill="#fff">4</text></g>
-          <g><circle cx="62"  cy="187" r="10" fill="#16a34a"/><text x="62" y="191" fill="#fff">5</text></g>
-          <g><circle cx="163" cy="208" r="10" fill="#16a34a"/><text x="163" y="212" fill="#fff">6</text></g>
-          <g><circle cx="163" cy="230" r="10" fill="#16a34a"/><text x="163" y="234" fill="#fff">7</text></g>
-          <g><circle cx="86"  cy="300" r="10" fill="#16a34a"/><text x="86" y="304" fill="#fff">8</text></g>
-          <g><circle cx="226" cy="238" r="10" fill="#16a34a"/><text x="226" y="242" fill="#fff">9</text></g>
-          <g><circle cx="222" cy="286" r="10" fill="#16a34a"/><text x="222" y="290" fill="#fff">10</text></g>
+          <g class="dpart" onclick="diagPart('mikro-info','1. Lensa okuler','dekat mata, memperbesar bayangan.',this)"><circle cx="163" cy="40" r="10" fill="#16a34a"/><text x="163" y="44" fill="#fff">1</text></g>
+          <g class="dpart" onclick="diagPart('mikro-info','2. Tabung','menghubungkan lensa okuler &amp; objektif.',this)"><circle cx="163" cy="86" r="10" fill="#16a34a"/><text x="163" y="90" fill="#fff">2</text></g>
+          <g class="dpart" onclick="diagPart('mikro-info','3. Revolver','memutar/memilih lensa objektif.',this)"><circle cx="88"  cy="122" r="10" fill="#16a34a"/><text x="88" y="126" fill="#fff">3</text></g>
+          <g class="dpart" onclick="diagPart('mikro-info','4. Lensa objektif','dekat objek, memperbesar benda.',this)"><circle cx="163" cy="150" r="10" fill="#16a34a"/><text x="163" y="154" fill="#fff">4</text></g>
+          <g class="dpart" onclick="diagPart('mikro-info','5. Meja sediaan','tempat meletakkan preparat (objek).',this)"><circle cx="62"  cy="187" r="10" fill="#16a34a"/><text x="62" y="191" fill="#fff">5</text></g>
+          <g class="dpart" onclick="diagPart('mikro-info','6. Diafragma','mengatur banyak sedikitnya cahaya.',this)"><circle cx="163" cy="208" r="10" fill="#16a34a"/><text x="163" y="212" fill="#fff">6</text></g>
+          <g class="dpart" onclick="diagPart('mikro-info','7. Kondensor','memusatkan cahaya ke objek.',this)"><circle cx="163" cy="230" r="10" fill="#16a34a"/><text x="163" y="234" fill="#fff">7</text></g>
+          <g class="dpart" onclick="diagPart('mikro-info','8. Cermin','memantulkan cahaya ke objek.',this)"><circle cx="86"  cy="300" r="10" fill="#16a34a"/><text x="86" y="304" fill="#fff">8</text></g>
+          <g class="dpart" onclick="diagPart('mikro-info','9. Makrometer','pemutar kasar — fokus cepat.',this)"><circle cx="226" cy="238" r="10" fill="#16a34a"/><text x="226" y="242" fill="#fff">9</text></g>
+          <g class="dpart" onclick="diagPart('mikro-info','10. Mikrometer','pemutar halus — fokus lambat.',this)"><circle cx="222" cy="286" r="10" fill="#16a34a"/><text x="222" y="290" fill="#fff">10</text></g>
         </g>
       </svg>
       <ol style="flex:1;min-width:220px;margin:0;padding-left:24px;font-size:13.5px;font-weight:600;line-height:1.7">
@@ -831,6 +857,7 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
         <li><b>Makrometer</b> — pemutar kasar (fokus cepat)</li>
         <li><b>Mikrometer</b> — pemutar halus (fokus lambat)</li>
       </ol>
+      <div class="dpanel" id="mikro-info" style="flex-basis:100%">👆 Klik nomor pada gambar mikroskop untuk melihat fungsi bagiannya.</div>
     </div>
   </div>
 
@@ -839,26 +866,23 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
     <h2>Sel &amp; Jaringan Hewan</h2>
     <p class="lead">Sel = unit terkecil kehidupan. Kumpulan sel sejenis membentuk jaringan.</p>
 
-    <h3>🔬 Sel Hewan vs Sel Tumbuhan</h3>
+    <h3>🔬 Sel Interaktif — klik tiap bagian!</h3>
     <div class="viz">
-      <h4>Bandingkan kedua sel</h4>
-      <div style="display:flex;gap:22px;flex-wrap:wrap;justify-content:center">
-        <svg viewBox="0 0 130 140" width="140" role="img" aria-label="Sel hewan">
-          <ellipse cx="65" cy="66" rx="58" ry="52" fill="#ffe1e8" stroke="#e57ea0" stroke-width="2"/>
-          <circle cx="58" cy="62" r="17" fill="#c77dff"/><circle cx="58" cy="62" r="6" fill="#8a4fc4"/>
-          <ellipse cx="96" cy="82" rx="12" ry="6" fill="#ef8a8a"/><ellipse cx="40" cy="96" rx="11" ry="5" fill="#ef8a8a"/>
-          <circle cx="92" cy="46" r="4" fill="#5ab0e0"/><circle cx="34" cy="52" r="4" fill="#5ab0e0"/>
-          <text x="65" y="135" font-size="11" font-weight="800" fill="#c0392b" text-anchor="middle">Sel Hewan</text>
-        </svg>
-        <svg viewBox="0 0 130 140" width="140" role="img" aria-label="Sel tumbuhan">
-          <rect x="6" y="8" width="118" height="112" rx="6" fill="#c9e8c0" stroke="#3faf5a" stroke-width="5"/>
-          <rect x="30" y="34" width="72" height="66" rx="6" fill="#bfe0f5"/>
-          <circle cx="58" cy="24" r="11" fill="#c77dff"/>
-          <ellipse cx="108" cy="58" rx="7" ry="4" fill="#2b8a44"/><ellipse cx="20" cy="80" rx="7" ry="4" fill="#2b8a44"/>
-          <text x="65" y="135" font-size="11" font-weight="800" fill="#15803d" text-anchor="middle">Sel Tumbuhan</text>
-        </svg>
-      </div>
-      <p class="cap">Sel tumbuhan punya <b>dinding sel</b> (hijau tebal), <b>kloroplas</b>, &amp; <b>vakuola besar</b> (biru). Sel hewan tidak.</p>
+      <h4>🖱️ Klik organel untuk melihat fungsinya</h4>
+      <svg viewBox="0 0 300 210" width="330" style="max-width:100%" role="img" aria-label="Sel tumbuhan interaktif">
+        <rect class="dpart" onclick="diagPart('cell-info','Dinding Sel','memberi bentuk &amp; perlindungan sel; hanya pada sel TUMBUHAN.',this)" x="6" y="6" width="288" height="198" rx="16" fill="#cfe9c6" stroke="#3faf5a" stroke-width="9"/>
+        <rect class="dpart" onclick="diagPart('cell-info','Membran Sel','mengatur keluar-masuknya zat ke dalam sel.',this)" x="18" y="18" width="264" height="174" rx="11" fill="#eaf7e6" stroke="#8fd08f" stroke-width="2"/>
+        <ellipse class="dpart" onclick="diagPart('cell-info','Vakuola','menyimpan cadangan makanan &amp; air; BESAR pada sel tumbuhan.',this)" cx="178" cy="122" rx="82" ry="58" fill="#bfe0f5" stroke="#69b0e0" stroke-width="1.5"/>
+        <g class="dpart" onclick="diagPart('cell-info','Inti Sel (Nukleus)','pengatur SELURUH kegiatan sel; menyimpan materi genetik (DNA).',this)"><circle cx="70" cy="72" r="30" fill="#c77dff"/><circle cx="70" cy="72" r="11" fill="#8a4fc4"/></g>
+        <ellipse class="dpart" onclick="diagPart('cell-info','Mitokondria','respirasi sel — penghasil ENERGI (ATP).',this)" cx="232" cy="55" rx="26" ry="13" fill="#ef8a8a" transform="rotate(-15 232 55)"/>
+        <g class="dpart" onclick="diagPart('cell-info','Kloroplas','tempat FOTOSINTESIS; hanya pada sel TUMBUHAN.',this)"><ellipse cx="66" cy="168" rx="22" ry="11" fill="#3faf5a"/><ellipse cx="250" cy="170" rx="22" ry="11" fill="#3faf5a"/></g>
+        <g class="dpart" onclick="diagPart('cell-info','Badan Golgi','mengemas &amp; mengeluarkan (sekresi) zat.',this)"><path d="M34 120 q22 -6 44 0" stroke="#e0982b" stroke-width="4" fill="none"/><path d="M36 128 q22 -6 40 0" stroke="#e0982b" stroke-width="4" fill="none"/><path d="M38 136 q20 -5 36 0" stroke="#e0982b" stroke-width="4" fill="none"/></g>
+        <path class="dpart" onclick="diagPart('cell-info','Retikulum Endoplasma','sintesis protein &amp; transportasi zat di dalam sel.',this)" d="M104 96 q14 8 0 16 q-14 8 0 16 q14 8 0 16" stroke="#9a6ad0" stroke-width="3.5" fill="none"/>
+        <g class="dpart" onclick="diagPart('cell-info','Ribosom','tempat sintesis PROTEIN (butiran kecil).',this)"><circle cx="120" cy="60" r="4" fill="#333"/><circle cx="133" cy="66" r="4" fill="#333"/><circle cx="126" cy="50" r="4" fill="#333"/></g>
+        <circle class="dpart" onclick="diagPart('cell-info','Lisosom','pencernaan di dalam sel.',this)" cx="236" cy="118" r="12" fill="#f4c04d"/>
+      </svg>
+      <div class="dpanel" id="cell-info">👆 Klik salah satu bagian sel untuk melihat fungsinya.</div>
+      <p class="cap">Diagram ini = sel <b>TUMBUHAN</b> (punya dinding sel, kloroplas, vakuola besar). Sel <b>HEWAN</b> tidak punya ketiganya.</p>
     </div>
     <div class="tbl-wrap"><table class="t">
       <tr><th>Bagian</th><th>Sel Hewan</th><th>Sel Tumbuhan</th></tr>
@@ -909,16 +933,18 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
       <div class="mini"><h4>Heterozigot</h4><p>Alel berbeda: Bb</p></div>
     </div>
 
-    <h3>🔲 Persilangan Monohibrid (1 sifat)</h3>
-    <p>Contoh: mangga <b>Manis (MM)</b> × <b>Masam (mm)</b> → F1 semua <b>Mm (manis)</b>. Lalu F1 × F1 (Mm × Mm):</p>
+    <h3>🔲 Persilangan Monohibrid (1 sifat) — Interaktif</h3>
+    <p>Huruf <b>BESAR</b> = dominan (mis. B = tinggi), <b>kecil</b> = resesif (b = pendek). Pilih genotipe kedua induk, lalu lihat keturunannya dihitung otomatis:</p>
     <div class="viz">
-      <h4>Diagram Punnett — Mm × Mm</h4>
-      <table class="t" style="max-width:300px;margin:auto;text-align:center">
-        <tr><th style="background:var(--card)"></th><th>M</th><th>m</th></tr>
-        <tr><th>M</th><td style="background:#dcfce7"><b>MM</b><br><small>manis</small></td><td style="background:#dcfce7"><b>Mm</b><br><small>manis</small></td></tr>
-        <tr><th>m</th><td style="background:#dcfce7"><b>Mm</b><br><small>manis</small></td><td style="background:#fee2e2"><b>mm</b><br><small>masam</small></td></tr>
-      </table>
-      <p class="cap">Perbandingan fenotip F2 = <b>3 Manis : 1 Masam</b> · genotip = 1 MM : 2 Mm : 1 mm.</p>
+      <h4>🧮 Diagram Punnett Interaktif</h4>
+      <div style="text-align:center;font-weight:800;font-size:15px">
+        Induk 1: <select id="pun-p1" onchange="punnett()" style="font-weight:800;padding:5px 8px;border-radius:8px;border:2px solid var(--line)"><option>BB</option><option selected>Bb</option><option>bb</option></select>
+        &nbsp;×&nbsp;
+        Induk 2: <select id="pun-p2" onchange="punnett()" style="font-weight:800;padding:5px 8px;border-radius:8px;border:2px solid var(--line)"><option>BB</option><option selected>Bb</option><option>bb</option></select>
+      </div>
+      <table class="t" id="pun-table" style="max-width:280px;margin:14px auto;text-align:center"></table>
+      <div class="dpanel" id="pun-result" style="text-align:center"></div>
+      <p class="cap">Coba <b>Bb × Bb</b> → hasil <b>3 dominan : 1 resesif</b>. Coba juga BB × bb, Bb × bb, dll.</p>
     </div>
 
     <h3>🔳 Persilangan Dihibrid (2 sifat)</h3>
@@ -1040,18 +1066,19 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
   <!-- Pemisahan -->
   <div class="topic" id="kim-pisah">
     <h2>Pemisahan Campuran</h2>
-    <p class="lead">Cara memisahkan zat sesuai sifatnya.</p>
-    <div class="grid g2">
-      <div class="mini"><div class="ic">☕</div><h4>Filtrasi</h4><p>Penyaringan (beda ukuran). Menghasilkan filtrat &amp; residu.</p></div>
-      <div class="mini"><div class="ic">🧂</div><h4>Kristalisasi/Evaporasi</h4><p>Penguapan → padatan/kristal. Contoh: garam dari air laut.</p></div>
-      <div class="mini"><div class="ic">💨</div><h4>Sublimasi</h4><p>Menyublim lalu didinginkan. Contoh: kapur barus + pasir.</p></div>
-      <div class="mini"><div class="ic">💧</div><h4>Destilasi</h4><p>Beda titik didih. Hasil <b>selalu cair</b>. Contoh: air tawar dari air laut.</p></div>
-      <div class="mini"><div class="ic">🌀</div><h4>Sentrifugasi</h4><p>Diputar sangat cepat.</p></div>
-      <div class="mini"><div class="ic">🎨</div><h4>Kromatografi</h4><p>Beda kecepatan rambat. Contoh: memisahkan warna tinta.</p></div>
-      <div class="mini"><div class="ic">🫗</div><h4>Dekantasi</h4><p>Pengendapan lalu menuang cairan bening perlahan.</p></div>
-      <div class="mini"><div class="ic">🧽</div><h4>Adsorpsi</h4><p>Penyerapan kotoran/warna. Contoh: karbon aktif menjernihkan air.</p></div>
-      <div class="mini"><div class="ic">🌿</div><h4>Ekstraksi</h4><p>Penyarian — mengambil sari dari tumbuhan.</p></div>
+    <p class="lead">Cara memisahkan zat sesuai sifatnya. <b>Klik tiap metode</b> untuk dasar &amp; contoh nyatanya.</p>
+    <div class="grid g2" id="pisah-cards">
+      <div class="mini" onclick="pisahPick(this,'perbedaan ukuran partikel','memisahkan air keruh dari pasir → filtrat (air jernih) &amp; residu (pasir)')"><div class="ic">☕</div><h4>Filtrasi</h4><p>Penyaringan (beda ukuran). Menghasilkan filtrat &amp; residu.</p></div>
+      <div class="mini" onclick="pisahPick(this,'penguapan pelarut','membuat garam dapur dari air laut → hasilnya kristal/padatan')"><div class="ic">🧂</div><h4>Kristalisasi/Evaporasi</h4><p>Penguapan → padatan/kristal. Contoh: garam dari air laut.</p></div>
+      <div class="mini" onclick="pisahPick(this,'perubahan padat→gas→padat (menyublim)','memisahkan kapur barus dari pasir')"><div class="ic">💨</div><h4>Sublimasi</h4><p>Menyublim lalu didinginkan. Contoh: kapur barus + pasir.</p></div>
+      <div class="mini" onclick="pisahPick(this,'perbedaan titik didih','mendapat air tawar dari air laut; hasil DESTILASI selalu berupa CAIRAN')"><div class="ic">💧</div><h4>Destilasi</h4><p>Beda titik didih. Hasil <b>selalu cair</b>. Contoh: air tawar dari air laut.</p></div>
+      <div class="mini" onclick="pisahPick(this,'perbedaan massa jenis + putaran cepat','memisahkan sel darah dari plasma di laboratorium')"><div class="ic">🌀</div><h4>Sentrifugasi</h4><p>Diputar sangat cepat.</p></div>
+      <div class="mini" onclick="pisahPick(this,'perbedaan kecepatan rambat pada kertas','memisahkan warna-warna penyusun tinta/spidol')"><div class="ic">🎨</div><h4>Kromatografi</h4><p>Beda kecepatan rambat. Contoh: memisahkan warna tinta.</p></div>
+      <div class="mini" onclick="pisahPick(this,'pengendapan','menuang air bening perlahan dari campuran yang sudah mengendap')"><div class="ic">🫗</div><h4>Dekantasi</h4><p>Pengendapan lalu menuang cairan bening perlahan.</p></div>
+      <div class="mini" onclick="pisahPick(this,'penyerapan zat pada permukaan','karbon aktif menyerap kotoran/bau → menjernihkan air')"><div class="ic">🧽</div><h4>Adsorpsi</h4><p>Penyerapan kotoran/warna. Contoh: karbon aktif menjernihkan air.</p></div>
+      <div class="mini" onclick="pisahPick(this,'penyarian zat memakai pelarut','mengambil sari daun untuk indikator alami atau minyak atsiri')"><div class="ic">🌿</div><h4>Ekstraksi</h4><p>Penyarian — mengambil sari dari tumbuhan.</p></div>
     </div>
+    <div class="dpanel" id="pisah-info">👆 Klik salah satu metode di atas untuk melihat dasar pemisahan &amp; contoh nyatanya.</div>
     <div class="viz">
       <h4>☕ Animasi: Filtrasi (Penyaringan)</h4>
       <svg viewBox="0 0 200 195" width="180" role="img" aria-label="Proses filtrasi">
@@ -1919,6 +1946,44 @@ function tideResume(){
   box.classList.remove('paused');
 }
 (function(){const b=document.getElementById('tide-anim');if(b)b.onclick=tideResume;})();
+
+/* ---- diagram interaktif: klik bagian -> panel info (sel, mikroskop, jantung) ---- */
+function diagPart(panelId,title,desc,el){
+  const svg=el.closest('svg');
+  if(svg)svg.querySelectorAll('.dsel').forEach(x=>x.classList.remove('dsel'));
+  el.classList.add('dsel');
+  const p=document.getElementById(panelId);
+  if(p)p.innerHTML='<b>'+title+'</b> — '+desc;
+}
+
+/* ---- Punnett square interaktif (monohibrid) ---- */
+function punnett(){
+  const e1=document.getElementById('pun-p1'),e2=document.getElementById('pun-p2');if(!e1||!e2)return;
+  const g1=e1.value.split(''),g2=e2.value.split('');
+  const norm=a=>a.split('').sort().join('');   // huruf besar (< kecil di ASCII) di depan
+  let html='<tr><th style="background:var(--card)"></th><th>'+g2[0]+'</th><th>'+g2[1]+'</th></tr>';
+  const cells=[],counts={};
+  for(const a of g1){let row='<tr><th>'+a+'</th>';
+    for(const b of g2){const geno=norm(a+b);cells.push(geno);counts[geno]=(counts[geno]||0)+1;
+      const dom=/[A-Z]/.test(geno);
+      row+='<td style="background:'+(dom?'#dcfce7':'#fee2e2')+'"><b>'+geno+'</b></td>';}
+    row+='</tr>';html+=row;}
+  document.getElementById('pun-table').innerHTML=html;
+  const genoStr=Object.keys(counts).sort().map(k=>counts[k]+' '+k).join(' : ');
+  const dom=cells.filter(c=>/[A-Z]/.test(c)).length,res=cells.length-dom;
+  let phen=(dom&&res)?dom+' dominan : '+res+' resesif':(dom?'semua DOMINAN':'semua RESESIF');
+  document.getElementById('pun-result').innerHTML='<b>Genotipe:</b> '+genoStr+' &nbsp;|&nbsp; <b>Fenotipe:</b> '+phen;
+}
+punnett();
+
+/* ---- pemisahan campuran: klik metode -> detail ---- */
+function pisahPick(el,dasar,contoh){
+  document.querySelectorAll('#pisah-cards .mini').forEach(x=>x.classList.remove('psel'));
+  el.classList.add('psel');
+  const h=el.querySelector('h4').textContent;
+  const p=document.getElementById('pisah-info');
+  if(p)p.innerHTML='<b>'+h+'</b> — Dasar: '+dasar+'. <b>Contoh:</b> '+contoh+'.';
+}
 </script>
 </body>
 </html>
