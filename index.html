@@ -1270,14 +1270,22 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
   <!-- Fase Bulan -->
   <div class="topic" id="spc-bulan">
     <h2>Fase Bulan</h2>
-    <p class="lead">Geser untuk melihat bentuk bulan berubah tiap fase.</p>
+    <p class="lead">Geser slider — lihat <b>posisi Bulan mengelilingi Bumi</b> (kiri) dan <b>bentuk yang tampak dari Bumi</b> (kanan). Perhatikan derajatnya!</p>
     <div class="lab" style="text-align:center">
-      <canvas id="moon" width="200" height="200" style="max-width:200px"></canvas>
-      <p style="margin:6px 0"><b id="moon-name" style="font-size:20px;color:#c7d2fe"></b></p>
+      <div style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center;align-items:center">
+        <div><canvas id="moon-orbit" width="240" height="240" style="max-width:240px"></canvas><p class="hint" style="margin:2px 0">☀️ Matahari · 🌍 Bumi · 🌙 posisi Bulan</p></div>
+        <div><canvas id="moon" width="180" height="180" style="max-width:180px"></canvas><p class="hint" style="margin:2px 0">Tampak dari Bumi</p></div>
+      </div>
+      <p style="margin:10px 0 4px"><b id="moon-name" style="font-size:20px;color:#c7d2fe"></b> &nbsp;<span class="tag" id="moon-deg"></span> <span class="tag" id="moon-type"></span></p>
       <input type="range" id="moon-slider" min="0" max="7" value="4">
-      <p class="hint" id="moon-desc"></p>
+      <p class="hint" id="moon-desc" style="min-height:34px"></p>
     </div>
-    <div class="note">🌙 Bulan tidak memancarkan cahaya sendiri — kita melihat bagian yang <b>terkena sinar matahari</b>. Bentuknya berubah karena posisi Bulan mengelilingi Bumi.</div>
+    <div class="grid g3">
+      <div class="mini"><h4>🌙 Sabit (Crescent)</h4><p><b>Kurang dari seperempat</b> terang. Terjadi di <b>45°</b> (awal) &amp; <b>315°</b> (akhir).</p></div>
+      <div class="mini"><h4>🌓 Paruh (Kuartal)</h4><p><b>Tepat setengah</b> terang. Terjadi di <b>90°</b> (kuartal 1) &amp; <b>270°</b> (kuartal 3).</p></div>
+      <div class="mini"><h4>🌔 Cembung (Gibbous)</h4><p><b>Lebih dari setengah</b>, belum penuh. Di <b>135°</b> (awal) &amp; <b>225°</b> (akhir).</p></div>
+    </div>
+    <div class="note">🌙 Bulan tidak memancarkan cahaya sendiri — kita melihat bagian yang <b>terkena sinar matahari</b>. Bentuknya berubah karena <b>posisi Bulan mengelilingi Bumi</b> (0° = Bulan Baru, 180° = Purnama). Satu siklus penuh ±29,5 hari.</div>
   </div>
 
   <!-- Gerhana -->
@@ -1574,15 +1582,38 @@ function makeStars(){
 
 /* ---------- TATA SURYA: Fase Bulan ---------- */
 const PHASES=[
-  {p:0,n:'Bulan Baru',d:'Sisi gelap menghadap Bumi, bulan (hampir) tak terlihat.'},
-  {p:.125,n:'Sabit Awal',d:'Sedikit sisi kanan mulai terang (waxing crescent).'},
-  {p:.25,n:'Paruh Awal (Kuartal 1)',d:'Setengah kanan terang.'},
-  {p:.375,n:'Cembung Awal',d:'Lebih dari setengah terang (waxing gibbous).'},
-  {p:.5,n:'Bulan Purnama',d:'Seluruh permukaan terang penuh.'},
-  {p:.625,n:'Cembung Akhir',d:'Mulai menyusut dari kanan (waning gibbous).'},
-  {p:.75,n:'Paruh Akhir (Kuartal 3)',d:'Setengah kiri terang.'},
-  {p:.875,n:'Sabit Akhir',d:'Tinggal sabit kiri (waning crescent).'}
+  {p:0,   n:'Bulan Baru',            deg:0,  t:'Baru',    d:'Bulan berada di antara Bumi & Matahari. Sisi gelap menghadap kita → (hampir) tak terlihat.'},
+  {p:.125,n:'Sabit Awal',            deg:45, t:'Sabit',   d:'Sabit tipis mulai tampak di sisi KANAN (kurang dari seperempat). Waxing crescent.'},
+  {p:.25, n:'Paruh Awal (Kuartal 1)',deg:90, t:'Paruh',   d:'Setengah KANAN terang. Bulan berada 90° dari Matahari.'},
+  {p:.375,n:'Cembung Awal',          deg:135,t:'Cembung',  d:'Lebih dari setengah terang (belum penuh). Waxing gibbous.'},
+  {p:.5,  n:'Bulan Purnama',         deg:180,t:'Purnama',  d:'Bulan berlawanan arah dengan Matahari. Seluruh permukaan terang penuh.'},
+  {p:.625,n:'Cembung Akhir',         deg:225,t:'Cembung',  d:'Terang mulai menyusut dari sisi kanan. Waning gibbous.'},
+  {p:.75, n:'Paruh Akhir (Kuartal 3)',deg:270,t:'Paruh',  d:'Setengah KIRI terang. Bulan berada 270° dari Matahari.'},
+  {p:.875,n:'Sabit Akhir',           deg:315,t:'Sabit',    d:'Tinggal sabit tipis di sisi KIRI. Waning crescent.'}
 ];
+/* diagram orbit: Matahari (kiri) - Bumi (tengah) - Bulan pada posisinya */
+function drawOrbit(idx){
+  const cv=document.getElementById('moon-orbit');if(!cv)return;const ctx=cv.getContext('2d');
+  const S=cv.width,cx=S/2,cy=S/2,R=S*0.33;
+  ctx.clearRect(0,0,S,S);
+  // sinar matahari dari kiri
+  ctx.fillStyle='#f59e0b';ctx.beginPath();ctx.arc(2,cy,24,0,7);ctx.fill();
+  ctx.strokeStyle='rgba(245,158,11,.35)';ctx.lineWidth=2;
+  for(let y=cy-42;y<=cy+42;y+=14){ctx.beginPath();ctx.moveTo(26,y);ctx.lineTo(cx-30,y);ctx.stroke();}
+  // orbit bulan
+  ctx.strokeStyle='rgba(160,160,200,.4)';ctx.setLineDash([4,5]);ctx.beginPath();ctx.arc(cx,cy,R,0,7);ctx.stroke();ctx.setLineDash([]);
+  // bumi
+  ctx.fillStyle='#3b82f6';ctx.beginPath();ctx.arc(cx,cy,15,0,7);ctx.fill();
+  ctx.fillStyle='#cfe0ff';ctx.font='bold 10px sans-serif';ctx.textAlign='center';ctx.fillText('Bumi',cx,cy+28);
+  // bulan pada posisi (0°=kiri/dekat matahari, 180°=kanan)
+  const a=idx*Math.PI/4, mx=cx-R*Math.cos(a), my=cy-R*Math.sin(a);
+  ctx.save();ctx.beginPath();ctx.arc(mx,my,10,0,7);ctx.clip();
+  ctx.fillStyle='#2b3150';ctx.fillRect(mx-10,my-10,20,20);
+  ctx.fillStyle='#f6ecc9';ctx.beginPath();ctx.arc(mx,my,10,Math.PI/2,Math.PI*1.5,false);ctx.fill(); // sisi kiri (menghadap matahari) terang
+  ctx.restore();
+  ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(mx,my,10,0,7);ctx.stroke();
+  ctx.fillStyle='#e8eaf6';ctx.font='bold 11px sans-serif';ctx.fillText(idx*45+'°',mx,my-15);
+}
 function drawMoon(p){
   const cv=document.getElementById('moon');if(!cv)return;const ctx=cv.getContext('2d');
   const S=cv.width,r=S/2-4,cx=S/2,cy=S/2;
@@ -1605,7 +1636,11 @@ function drawMoon(p){
   [[0.35,0.4,6],[0.6,0.55,9],[0.5,0.72,5]].forEach(c=>{ctx.beginPath();ctx.arc(S*c[0],S*c[1],c[2],0,7);ctx.fill();});
 }
 function drawMoonPhase(){const i=+document.getElementById('moon-slider').value;const f=PHASES[i];
-  drawMoon(f.p);document.getElementById('moon-name').textContent=f.n;document.getElementById('moon-desc').textContent=f.d;}
+  drawMoon(f.p);drawOrbit(i);
+  document.getElementById('moon-name').textContent=f.n;
+  document.getElementById('moon-deg').textContent=f.deg+'°';
+  document.getElementById('moon-type').textContent=f.t;
+  document.getElementById('moon-desc').textContent=f.d;}
 document.getElementById('moon-slider').oninput=drawMoonPhase;
 drawMoonPhase();
 
