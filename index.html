@@ -245,6 +245,13 @@ svg .dpart.dsel{filter:drop-shadow(0 0 3px #000) brightness(1.12)}
 .dpanel b{color:var(--accent-d)}
 .mini.psel{outline:3px solid var(--accent);outline-offset:-2px}
 .mini[onclick]{cursor:pointer}
+/* tooltip melayang untuk diagram interaktif (sel/mikroskop/jantung) */
+#diag-tip{position:fixed;z-index:200;max-width:210px;width:max-content;background:var(--card);border:1px solid var(--line);
+  border-radius:11px;padding:9px 12px;font-size:12px;font-weight:700;color:var(--ink);line-height:1.42;
+  box-shadow:var(--shadow);pointer-events:none;transform:translate(-50%,-100%);display:none}
+#diag-tip.on{display:block;animation:fade .18s}
+#diag-tip b{display:block;color:var(--accent-d);margin-bottom:2px;font-size:13px}
+#diag-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--card)}
 .chain{display:flex;align-items:center;justify-content:center;gap:2px;flex-wrap:wrap}
 .chain .org{font-size:32px;text-align:center;min-width:56px;line-height:1.1}
 .chain .org small{display:block;font-size:11px;font-weight:800;color:var(--muted)}
@@ -1954,7 +1961,19 @@ function diagPart(panelId,title,desc,el){
   el.classList.add('dsel');
   const p=document.getElementById(panelId);
   if(p)p.innerHTML='<b>'+title+'</b> — '+desc;
+  // tooltip melayang di dekat bagian yang diklik
+  let tip=document.getElementById('diag-tip');
+  if(!tip){tip=document.createElement('div');tip.id='diag-tip';document.body.appendChild(tip);}
+  tip.innerHTML='<b>'+title+'</b>'+desc;
+  const r=el.getBoundingClientRect();
+  tip.style.left=(r.left+r.width/2)+'px';
+  tip.style.top=(r.top-8)+'px';
+  tip.classList.add('on');
 }
+/* klik di luar bagian diagram -> sembunyikan tooltip */
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.dpart')){const t=document.getElementById('diag-tip');if(t)t.classList.remove('on');}
+});
 
 /* ---- Punnett square interaktif (monohibrid) ---- */
 function punnett(){
