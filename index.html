@@ -629,17 +629,62 @@ footer{text-align:center;padding:26px 16px 40px;color:var(--muted);font-weight:7
     </div>
     <div class="viz">
       <h4>💧 Animasi: Pembentukan Urin di Nefron</h4>
-      <svg viewBox="0 0 300 120" width="300" role="img" aria-label="Alur pembentukan urin">
-        <path d="M20 45 H95 Q120 45 120 68 Q120 90 150 90 Q185 90 200 62 Q212 40 285 40" fill="none" stroke="#cfe0ef" stroke-width="13" stroke-linecap="round"/>
-        <circle r="6" fill="#d33">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M20 45 H95 Q120 45 120 68 Q120 90 150 90 Q185 90 200 62 Q212 40 285 40"/>
-          <animate attributeName="fill" values="#d33;#d33;#e0a020;#eecb00;#8fbf3f" keyTimes="0;0.25;0.5;0.75;1" dur="5s" repeatCount="indefinite"/>
-        </circle>
-        <text x="24" y="30" font-size="10.5" font-weight="800" fill="#15803d">1 Filtrasi</text>
-        <text x="112" y="112" font-size="10.5" font-weight="800" fill="#15803d">2 Reabsorpsi</text>
-        <text x="228" y="30" font-size="10.5" font-weight="800" fill="#15803d">3 Augmentasi</text>
+      <svg viewBox="0 0 470 300" width="100%" style="max-width:470px;height:auto;display:block;margin:0 auto" role="img" aria-label="Ginjal dan nefron: pembentukan urin (filtrasi, reabsorpsi, augmentasi)">
+        <defs>
+          <radialGradient id="gGlom" cx="38%" cy="34%" r="72%"><stop offset="0" stop-color="#f7b0b0"/><stop offset="1" stop-color="#b5271c"/></radialGradient>
+          <linearGradient id="gTube" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f7dcae"/><stop offset=".5" stop-color="#e8bd76"/><stop offset="1" stop-color="#cf9a38"/></linearGradient>
+          <linearGradient id="gArt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ef4444"/><stop offset="1" stop-color="#b01414"/></linearGradient>
+          <radialGradient id="gKid" cx="42%" cy="40%" r="70%"><stop offset="0" stop-color="#dda093"/><stop offset="1" stop-color="#c07d70"/></radialGradient>
+        </defs>
+        <path d="M110 56 C58 52 24 92 24 150 C24 208 58 248 110 244 C92 224 88 206 108 190 C128 176 128 128 108 114 C88 100 92 76 110 56 Z" fill="url(#gKid)" stroke="#9c6058" stroke-width="2"/>
+        <path d="M104 72 C64 70 40 104 40 150 C40 196 64 230 104 228 C92 210 90 196 104 184 C120 172 120 132 104 120 C90 108 92 90 104 72 Z" fill="#ecb7aa"/>
+        <g fill="#c17565" stroke="#a86a5e" stroke-width="1" opacity=".92"><path d="M52 100 L50 138 L101 132 Z"/><path d="M46 146 L50 176 L101 150 Z"/><path d="M56 182 L64 206 L101 168 Z"/></g>
+        <path d="M100 136 Q126 140 130 160 Q133 180 124 198" fill="none" stroke="#f2e8d2" stroke-width="8" stroke-linecap="round"/>
+        <path d="M124 198 Q131 224 129 256" fill="none" stroke="#e3c53a" stroke-width="6" stroke-linecap="round"/>
+        <path d="M156 130 Q132 140 116 148" fill="none" stroke="url(#gArt)" stroke-width="6" stroke-linecap="round"/>
+        <path d="M156 174 Q132 164 118 154" fill="none" stroke="#3f80c6" stroke-width="7" stroke-linecap="round"/>
+        <g font-size="8" fill="#6b6377" font-weight="600"><text x="70" y="266" text-anchor="middle" font-size="9.5" font-weight="800" fill="#9c6058">Ginjal (irisan)</text><text x="158" y="128">Arteri renalis</text><text x="158" y="178">Vena renalis</text><text x="134" y="250">Ureter</text></g>
+        <g stroke="#c7bfb2" stroke-width="1.4" stroke-dasharray="4 3" fill="none"><path d="M150 118 L206 44"/><path d="M150 182 L206 260"/></g>
+        <text x="176" y="154" font-size="8" fill="#9a92a2" font-style="italic">diperbesar &#8250;</text>
+        <g transform="translate(150,0)">
+          <g fill="none" stroke="#d1544f" stroke-width="1.7" opacity=".78" stroke-linecap="round">
+            <path d="M136 116 q-14 18 0 36 q14 18 0 36 q-14 18 0 36 q9 12 0 24"/>
+            <path d="M122 138 q-11 15 0 30 q11 15 0 32 q-8 12 0 26"/>
+            <path d="M202 116 q14 18 0 36 q-14 18 0 36 q14 18 0 36 q-9 12 0 24"/>
+            <path d="M216 138 q11 15 0 30 q-11 15 0 32 q8 12 0 26"/>
+            <path d="M124 150 q22 8 40 0 M124 190 q22 8 40 0 M124 228 q22 8 40 0" opacity=".55"/>
+          </g>
+          <path d="M4 92 Q34 90 48 78" fill="none" stroke="url(#gArt)" stroke-width="7.5" stroke-linecap="round"/>
+          <path d="M72 45 Q98 30 122 40 Q140 47 138 64" fill="none" stroke="#e07675" stroke-width="5.5" stroke-linecap="round"/>
+          <path d="M88 80 Q58 102 37 80 Q20 61 40 42 Q57 27 81 40" fill="none" stroke="#bfe0f2" stroke-width="8" stroke-linecap="round"/>
+          <path d="M88 80 Q58 102 37 80 Q20 61 40 42 Q57 27 81 40" fill="none" stroke="#7fbfe6" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+          <circle cx="64" cy="62" r="20.5" fill="url(#gGlom)"/>
+          <g fill="none" stroke="#8f1f16" stroke-width="2" stroke-linecap="round" opacity=".85"><path d="M51 63 q4 -12 12 -6 q10 8 1 15 q-10 6 -15 -5 q-3 -10 10 -10 q13 0 10 13"/><path d="M57 52 q9 4 5 14 M69 52 q-8 5 -3 15 M54 71 q10 -2 16 4"/></g>
+          <circle cx="57" cy="55" r="5" fill="#fff" opacity=".28"/>
+          <path id="nefronP" d="M86 72 C104 60 112 86 128 74 C144 64 150 88 150 108 L150 250 Q152 268 170 268 Q188 268 188 250 L188 110 C190 90 206 100 214 84 C222 70 236 82 244 78 C252 74 250 96 250 112 L250 274" fill="none" stroke="url(#gTube)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+          <use href="#nefronP" stroke="#fff2da" stroke-width="7"/>
+          <use href="#nefronP" stroke="#fffaf0" stroke-width="2.4" opacity=".9"/>
+          <circle r="5.5">
+            <animateMotion dur="6.5s" repeatCount="indefinite" path="M86 72 C104 60 112 86 128 74 C144 64 150 88 150 108 L150 250 Q152 268 170 268 Q188 268 188 250 L188 110 C190 90 206 100 214 84 C222 70 236 82 244 78 C252 74 250 96 250 112 L250 274"/>
+            <animate attributeName="fill" values="#dc2626;#dc2626;#e0902a;#e0902a;#84c13a;#5fa32a" keyTimes="0;0.16;0.42;0.72;0.9;1" dur="6.5s" repeatCount="indefinite"/>
+          </circle>
+          <g font-size="8.5" fill="#6b6377" font-weight="600">
+            <text x="2" y="120">Arteriol aferen</text>
+            <text x="82" y="28">Arteriol eferen</text>
+            <text x="2" y="40">Kapsula Bowman</text>
+            <text x="196" y="290" text-anchor="middle">Lengkung Henle</text>
+            <text x="258" y="150">Saluran</text><text x="258" y="161">pengumpul</text>
+            <text x="120" y="214" text-anchor="end">Kapiler</text><text x="120" y="225" text-anchor="end">peritubular</text>
+          </g>
+          <g font-size="11" font-weight="800">
+            <g><rect x="26" y="2" width="86" height="17" rx="8" fill="#16a34a"/><text x="69" y="14" text-anchor="middle" fill="#fff">1 Filtrasi</text></g>
+            <g><rect x="2" y="176" width="104" height="17" rx="8" fill="#d97706"/><text x="54" y="188" text-anchor="middle" fill="#fff">2 Reabsorpsi</text></g>
+            <g><rect x="196" y="36" width="110" height="17" rx="8" fill="#65a30d"/><text x="251" y="48" text-anchor="middle" fill="#fff">3 Augmentasi</text></g>
+          </g>
+          <text x="250" y="292" text-anchor="middle" font-size="10.5" font-weight="800" fill="#5fa32a">&#128167; Urin</text>
+        </g>
       </svg>
-      <p class="cap">Tetes darah (merah) disaring → diserap ulang → ditambah zat sisa → menjadi <b>urin</b> (hijau).</p>
+      <p class="cap">Tetes darah (merah) masuk lewat <b>arteriol aferen</b> → disaring di <b>glomerulus</b> (filtrasi) → zat berguna diserap ulang di <b>tubulus &amp; lengkung Henle</b> (reabsorpsi, oranye) → ditambah zat sisa (augmentasi) → keluar sebagai <b>urin</b> (hijau) lewat saluran pengumpul.</p>
     </div>
     <div class="note">🩺 Penyakit ginjal: <b>Nefritis</b> (radang), <b>Diabetes melitus</b> (ada glukosa di urin — rusak di glomerulus), <b>Albuminuria</b> (ada protein), <b>Batu ginjal</b> (endapan kalsium), <b>Diabetes insipidus</b> (pipis terus, kekurangan hormon ADH).</div>
   </div>
